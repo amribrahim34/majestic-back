@@ -15,7 +15,7 @@ return new class extends Migration
 
 
             $table->id(); // Alias for $table->bigIncrements('id');
-            $table->string('title', 255);
+            $table->json('title', 255);
             $table->unsignedBigInteger('author_id');
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('publisher_id');
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->enum('format', ['PDF', 'Hard Copy', 'Audiobook'])->default('Hard Copy');
             $table->decimal('price', 10, 2);
             $table->integer('stock_quantity');
-            $table->text('description')->nullable();
+            $table->json('description')->nullable();
 
             // Foreign keys constraints
             $table->foreign('author_id')->references('id')->on('authors')->onDelete('cascade');
