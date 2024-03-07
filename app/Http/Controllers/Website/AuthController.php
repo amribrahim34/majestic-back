@@ -22,9 +22,13 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+            $user = Auth::user();
+            $token = $user->createToken('authToken')->plainTextToken;
 
-            return response()->json(Auth::user(), 200);
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+            ], 200);
         }
 
         return response()->json(['message' => __('messages.login_error')], 401);
@@ -51,9 +55,14 @@ class AuthController extends Controller
 
         // Implement any post-registration logic here, such as login or token generation
         auth()->login($user);
+        $user = Auth::user();
+        $token = $user->createToken('authToken')->plainTextToke;
 
         // Return a successful response, e.g., user data or a redirect
-        return response()->json($user, 201);
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ], 201);
     }
 
 
