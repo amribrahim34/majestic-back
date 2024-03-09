@@ -8,7 +8,7 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsAdmin extends Middleware
+class IsAdmin
 {
     /**
      * Handle an incoming request.
