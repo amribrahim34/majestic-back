@@ -27,9 +27,10 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $language = $request->get('lang', app()->getLocale()); // Default to app locale
-        $categories = $this->categoryRepository->findByLanguage($language);
-        return response()->json(['data' => $categories]);
+        $categories = $this->categoryRepository->all();
+        return response()->json([
+            'data' => CategoryResource::collection($categories)
+        ]);
     }
 
 
@@ -39,9 +40,7 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        // $category = Category::create($request->validated());
         $category = $this->categoryRepository->create($request->validated());
-
         return response()->json([
             'message' => __('categories.created'),
             'data' => new CategoryResource($category)
@@ -64,7 +63,6 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         $category = $this->categoryRepository->update($category->id, $request->validated());
-
         return response()->json([
             'message' => __('categories.updated'),
             'data' => new CategoryResource($category)
@@ -77,7 +75,6 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $this->categoryRepository->delete($category->id);
-
         return response()->json(['message' => __('categories.deleted')], Response::HTTP_NO_CONTENT);
     }
 }
