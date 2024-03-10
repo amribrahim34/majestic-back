@@ -7,16 +7,29 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
 
 class CategoryController extends Controller
 {
+
+    protected $categoryRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::paginate();
-        return CategoryResource::collection($categories);
+        $language = $request->get('lang', app()->getLocale()); // Default to app locale
+        $categories = $this->categoryRepository->findByLanguage($language);
+        return response()->json(['data' => $categories]);
     }
 
 
@@ -27,17 +40,12 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         // $category = Category::create($request->validated());
-        $category = new Category();
-        $category->setTranslations('category_name', $request->category_name);
-        $category->setTranslations('description', $request->description ?: []);
-        $category->parent_id = $request->parent_id;
-        $category->save();
+        $category = $this->categoryRepository->create($request->validated());
 
-        $data =  new CategoryResource($category);
-        return response([
-            'message' =>  __('categories.created'),
-            'data' => $data
-        ], 201);
+        return response()->json([
+            'message' => __('categories.created'),
+            'data' => new CategoryResource($category)
+        ], Response::HTTP_CREATED);
     }
 
     /**
@@ -55,17 +63,12 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        // $category->update($request->validated());
-        $category->setTranslations('category_name', $request->category_name);
-        $category->setTranslations('description', $request->description ?: []);
-        $category->parent_id = $request->parent_id;
-        $category->save();
+        $category = $this->categoryRepository->update($category->id, $request->validated());
 
-        $data =  new CategoryResource($category);
-        return response([
-            'message' =>  __('categories.updated'),
-            'data' => $data
-        ], 201);
+        return response()->json([
+            'message' => __('categories.updated'),
+            'data' => new CategoryResource($category)
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -73,9 +76,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
-        return response([
-            'message' =>  __('categories.deleted'),
-        ], 201);
+        $this->categoryRepository->delete($category->id);
+
+        return response()->json(['message' => __('categories.deleted')], Response::HTTP_NO_CONTENT);
     }
 }
