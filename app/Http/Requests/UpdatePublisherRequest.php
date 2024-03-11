@@ -11,7 +11,7 @@ class UpdatePublisherRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class UpdatePublisherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'publisher_name' => 'sometimes|array',
+            'publisher_name.*' => 'string|max:255',
+            'logo' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'location' => 'sometimes|string|max:255',
+            'website' => 'sometimes|url|max:255',
         ];
     }
 }

@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AuthorController;
-
+use App\Http\Controllers\Admin\PublisherController;
 
 Route::prefix('admin')->group(function () {
 
@@ -24,5 +24,13 @@ Route::prefix('admin')->group(function () {
         Route::get('/authors/{author}', [AuthorController::class, 'show'])->name('admin.authors.show');
         Route::put('/authors/{author}', [AuthorController::class, 'update'])->name('admin.authors.update');
         Route::delete('/authors/{author}', [AuthorController::class, 'destroy'])->name('admin.authors.destroy');
+    });
+
+    Route::middleware('admin')->group(function () {
+        Route::get('/publishers', [PublisherController::class, 'index']);
+        Route::post('/publishers', [PublisherController::class, 'store']);
+        Route::get('/publishers/{publisher}', [PublisherController::class, 'show']);
+        Route::put('/publishers/{publisher}', [PublisherController::class, 'update']);
+        Route::delete('/publishers/{publisher}', [PublisherController::class, 'destroy']);
     });
 });

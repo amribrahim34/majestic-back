@@ -11,7 +11,7 @@ class StorePublisherRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class StorePublisherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'publisher_name' => 'required|array',
+            'publisher_name.*' => 'required|string|max:255',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'location' => 'required|string|max:255',
+            'website' => 'required|url|max:255',
         ];
     }
 }
