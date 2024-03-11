@@ -11,7 +11,7 @@ class StoreBookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,23 @@ class StoreBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|array',
+            'title.*' => 'required|string|max:255',
+            'author_id' => 'required|exists:authors,id',
+            'category_id' => 'required|exists:categories,id',
+            'publisher_id' => 'required|exists:publishers,id',
+            'publication_date' => 'nullable|date',
+            'language_id' => 'required|exists:languages,id',
+            'isbn10' => 'nullable|string|size:10',
+            'isbn13' => 'nullable|string|size:13',
+            'num_pages' => 'nullable|integer|min:1',
+            'dimensions' => 'nullable|string|max:50',
+            'weight' => 'nullable|numeric|min:0',
+            'format' => 'required|in:PDF,Hard Copy,Audiobook',
+            'price' => 'required|numeric|min:0',
+            'stock_quantity' => 'required|integer|min:0',
+            'description' => 'nullable|array',
+            'description.*' => 'string',
         ];
     }
 }
