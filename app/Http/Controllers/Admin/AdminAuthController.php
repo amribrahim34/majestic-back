@@ -2,29 +2,37 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Admin\IAuthService;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AdminLoginRequest;
+use Illuminate\Http\Response;
+
 
 class AdminAuthController extends Controller
 {
 
-    public function login(Request $request)
+    private $authService;
+
+    public function __construct(IAuthService $authService)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $admin = Auth::guard('admin')->user();
-            $token = $admin->createToken('adminToken', ['*'])->plainTextToken;
+        $this->authService = $authService;
+    }
 
 
-            return response()->json([
-                'admin' => $admin,
-                'token' => $token,
-            ], 200);
+
+    public function login(AdminLoginRequest $request)
+    {
+        $admin = $this->authService->authenticate($request->email, $request->password);
+
+        if (!$admin) {
+            return response()->json(['message' => 'Authentication failed.'], 403);
         }
-        return response()->json(['message' => 'Access denied.'], 403);
+
+        $token = $admin->createToken('adminToken')->plainTextToken;
+
+        return response()->json([
+            'admin' => $admin->makeHidden(['password']),
+            'token' => $token,
+        ], Response::HTTP_OK); // Use HTTP status codes from the Response facade
     }
 }
