@@ -37,6 +37,11 @@ class CategoryRepository implements CategoryRepositoryInterface
         $category->delete();
     }
 
+    public function bulkDelete($ids)
+    {
+        Category::whereIn('id', $ids)->delete();
+    }
+
     public function findByLanguage($languageCode)
     {
         App::setLocale($languageCode);

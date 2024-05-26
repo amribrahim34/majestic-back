@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BulkDeleteCategoriesRequest;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
@@ -75,6 +76,13 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $this->categoryRepository->delete($category->id);
+        return response()->json(['message' => __('categories.deleted')], Response::HTTP_NO_CONTENT);
+    }
+
+    public function bulkDelete(BulkDeleteCategoriesRequest $request)
+    {
+        $v = $request->validated();
+        $this->categoryRepository->bulkDelete($v);
         return response()->json(['message' => __('categories.deleted')], Response::HTTP_NO_CONTENT);
     }
 }
