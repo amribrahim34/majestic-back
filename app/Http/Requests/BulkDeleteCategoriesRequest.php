@@ -22,8 +22,8 @@ class BulkDeleteCategoriesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_ids' => 'required|array',
-            'category_ids.*' => 'exists:categories,id'
+            'categoryIds' => 'required|array',
+            'categoryIds.*' => 'exists:categories,id'
         ];
     }
 }

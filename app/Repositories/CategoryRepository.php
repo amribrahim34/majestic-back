@@ -37,9 +37,9 @@ class CategoryRepository implements CategoryRepositoryInterface
         $category->delete();
     }
 
-    public function bulkDelete($ids)
+    public function bulkDelete($params)
     {
-        Category::whereIn('id', $ids)->delete();
+        Category::whereIn('id', $params['categoryIds'])->delete();
     }
 
     public function findByLanguage($languageCode)

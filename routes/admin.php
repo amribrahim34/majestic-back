@@ -17,6 +17,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/categories/{category}', [CategoryController::class, 'show']);
         Route::put('/categories/{category}', [CategoryController::class, 'update']);
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+        Route::post('/categories/bulk-delete', [CategoryController::class, 'bulkDelete']);
     });
 
     Route::middleware('admin')->group(function () {
