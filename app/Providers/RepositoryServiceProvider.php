@@ -11,13 +11,16 @@ use App\Repositories\CategoryRepository;
 use App\Repositories\Interfaces\AuthorRepositoryInterface;
 use App\Repositories\Interfaces\BookRepositoryInterface;
 use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Repositories\Interfaces\LanguageRepositoryInterface;
 use App\Repositories\Interfaces\PublisherRepositoryInterface;
+use App\Repositories\LanguageRepository;
 use App\Repositories\PublisherRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->app->bind(LanguageRepositoryInterface::class, LanguageRepository::class);
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
         $this->app->bind(AuthorRepositoryInterface::class, AuthorRepository::class);
         $this->app->bind(PublisherRepositoryInterface::class, PublisherRepository::class);

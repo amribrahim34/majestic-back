@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\PublisherController;
 
 Route::prefix('admin')->group(function () {
@@ -43,5 +44,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/books/{book}', [BookController::class, 'show']);
         Route::put('/books/{book}', [BookController::class, 'update']);
         Route::delete('/books/{book}', [BookController::class, 'destroy']);
+    });
+
+    Route::middleware('admin')->group(function () {
+        Route::get('/languages', [LanguageController::class, 'index']);
+        Route::get('/languages/{language}', [LanguageController::class, 'show']);
     });
 });
