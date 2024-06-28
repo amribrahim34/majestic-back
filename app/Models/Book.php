@@ -26,6 +26,7 @@ class Book extends Model
         'price',
         'stock_quantity',
         'description',
+        'img',
     ];
 
     // Specify which attributes are translatable.

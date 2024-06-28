@@ -39,6 +39,7 @@ class StoreBookRequest extends FormRequest
             'stock_quantity' => 'required|integer|min:0',
             'description' => 'nullable|array',
             'description.*' => 'string',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

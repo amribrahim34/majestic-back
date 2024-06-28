@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Book;
 use App\Repositories\Interfaces\BookRepositoryInterface;
+use Illuminate\Http\UploadedFile;
 
 class BookRepository implements BookRepositoryInterface
 {
@@ -19,7 +20,11 @@ class BookRepository implements BookRepositoryInterface
 
     public function create(array $data)
     {
-        // Assuming $data includes properly formatted arrays for title and description per Spatie's requirements
+        if (isset($data['img']) && $data['img'] instanceof UploadedFile) {
+            $path = $data['img']->store('book_images', 'public');
+            $data['img'] = $path;
+        }
+
         return Book::create($data);
     }
 
