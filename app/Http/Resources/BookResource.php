@@ -14,9 +14,11 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $locale = $request->header('Accept-Language', app()->getLocale());
+
         return [
             'id' => $this->id,
-            'title' => $this->title, // Assuming title is automatically decoded by Spatie's translatable package
+            'title' => $this->getTranslation('title', $locale),
             'author' => new AuthorResource($this->whenLoaded('author')),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'publisher' => new PublisherResource($this->whenLoaded('publisher')),
@@ -30,7 +32,7 @@ class BookResource extends JsonResource
             'format' => $this->format,
             'price' => $this->price,
             'stock_quantity' => $this->stock_quantity,
-            'description' => $this->description, // Assuming description is automatically decoded
+            'description' => $this->getTranslation('description', $locale),
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
         ];

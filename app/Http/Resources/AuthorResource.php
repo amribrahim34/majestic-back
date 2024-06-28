@@ -15,8 +15,7 @@ class AuthorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $locale = App::getLocale();
-
+        $locale = $request->header('Accept-Language', app()->getLocale());
         return [
             'id' => $this->id,
             'first_name' => $this->getTranslations('first_name'),

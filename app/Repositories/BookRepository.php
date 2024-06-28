@@ -9,7 +9,7 @@ class BookRepository implements BookRepositoryInterface
 {
     public function all()
     {
-        return Book::all();
+        return Book::with(['author', 'category', 'publisher', 'language'])->paginate();
     }
 
     public function findById($id)
