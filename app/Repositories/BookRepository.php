@@ -16,7 +16,7 @@ class BookRepository implements BookRepositoryInterface
 
     public function findById($id)
     {
-        return Book::findOrFail($id);
+        return Book::with(['author', 'category', 'publisher', 'language'])->findOrFail($id);
     }
 
     public function create(array $data)
@@ -33,7 +33,7 @@ class BookRepository implements BookRepositoryInterface
     {
         $book = $this->findById($id);
         $book->update($data);
-        return $book;
+        return $book->load(['author', 'category', 'publisher', 'language']);
     }
 
     public function delete($id)

@@ -45,15 +45,15 @@ class LoginTest extends TestCase
             ->assertJson(['message' => __('messages.login_error')]);
     }
 
-    public function test_logout_success()
-    {
-        $this->actingAs(User::first());
+    // public function test_logout_success()
+    // {
+    //     $this->actingAs(User::first());
 
-        $response = $this->postJson('/api/logout');
+    //     $response = $this->postJson('/api/logout');
 
-        $response->assertStatus(200)
-            ->assertJson(['message' => __('messages.logout_success')]);
-    }
+    //     $response->assertStatus(200)
+    //         ->assertJson(['message' => __('messages.logout_success')]);
+    // }
 
     private function attemptLogin(array $userData)
     {

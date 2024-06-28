@@ -33,6 +33,7 @@ class BookResource extends JsonResource
             'price' => $this->price,
             'stock_quantity' => $this->stock_quantity,
             'description' => $this->getTranslation('description', $locale),
+            'img' => $this->img,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
         ];
