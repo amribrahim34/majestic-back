@@ -10,7 +10,8 @@ class BookRepository implements BookRepositoryInterface
 {
     public function all()
     {
-        return Book::with(['author', 'category', 'publisher', 'language'])->paginate();
+        $limit = request()->query->get('limit', 10);
+        return Book::with(['author', 'category', 'publisher', 'language'])->paginate($limit);
     }
 
     public function findById($id)
