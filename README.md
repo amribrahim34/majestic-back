@@ -1,66 +1,218 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Book Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+The Book Management API allows administrators to perform CRUD (Create, Read, Update, Delete) operations on books in the Majestic Minds bookstore system.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Base URL
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+All API requests should be made to: `https://api.majesticminds.com/v1/admin/books`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Authentication
 
-## Learning Laravel
+All endpoints require authentication. Include the JWT token in the Authorization header:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Endpoints
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. List Books
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Retrieves a paginated list of books.
 
-## Laravel Sponsors
+-   **URL:** `/`
+-   **Method:** `GET`
+-   **URL Params:**
+    -   `page=[integer]` (optional, default=1)
+    -   `per_page=[integer]` (optional, default=15)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### Success Response:
 
-### Premium Partners
+-   **Code:** 200
+-   **Content:**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+    ```json
+    {
+        "data": [
+            {
+                "id": 1,
+                "title": "Book Title",
+                "author": {
+                    "id": 1,
+                    "first_name": { "en": "John", "ar": "يحيى" },
+                    "last_name": { "en": "Doe", "ar": "الدو" }
+                },
+                "category": {
+                    "id": 1,
+                    "category_name": { "en": "Fiction", "ar": "خيال" }
+                },
+                "publisher": {
+                    "id": 1,
+                    "publisher_name": {
+                        "en": "Publisher Name",
+                        "ar": "اسم الناشر"
+                    }
+                },
+                "language": {
+                    "id": 1,
+                    "language_name": "English"
+                }
+            }
+            // ... more books
+        ],
+        "links": {
+            "first": "https://api.majesticminds.com/v1/admin/books?page=1",
+            "last": "https://api.majesticminds.com/v1/admin/books?page=10",
+            "prev": null,
+            "next": "https://api.majesticminds.com/v1/admin/books?page=2"
+        },
+        "meta": {
+            "current_page": 1,
+            "from": 1,
+            "last_page": 10,
+            "path": "https://api.majesticminds.com/v1/admin/books",
+            "per_page": 15,
+            "to": 15,
+            "total": 150
+        }
+    }
+    ```
 
-## Contributing
+### 2. Create a Book
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Creates a new book.
 
-## Code of Conduct
+-   **URL:** `/`
+-   **Method:** `POST`
+-   **Data Params:**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    ```json
+    {
+        "title": { "en": "New Book Title", "ar": "عنوان الكتاب الجديد" },
+        "author_id": 1,
+        "category_id": 1,
+        "publisher_id": 1,
+        "language_id": 1,
+        "publication_date": "2023-01-01",
+        "isbn10": "1234567890",
+        "isbn13": "1234567890123",
+        "num_pages": 200,
+        "format": "Hard Copy",
+        "price": 29.99,
+        "stock_quantity": 100,
+        "description": { "en": "Book description", "ar": "وصف الكتاب" },
+        "img": "[base64 encoded image]"
+    }
+    ```
 
-## Security Vulnerabilities
+#### Success Response:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+-   **Code:** 201
+-   **Content:**
 
-## License
+    ```json
+    {
+        "data": {
+            "id": 2,
+            "title": { "en": "New Book Title", "ar": "عنوان الكتاب الجديد" },
+            "author": {
+                "id": 1,
+                "first_name": { "en": "John", "ar": "يحيى" },
+                "last_name": { "en": "Doe", "ar": "الدو" }
+            }
+            // ... other book details
+        }
+    }
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 3. Get a Book
+
+Retrieves details of a specific book.
+
+-   **URL:** /:id
+-   **Method:** `GET`
+-   **URL Params:** `id=[integer]` (required)
+
+#### Success Response:
+
+-   **Code:** 200
+-   **Content:** Same as the response for creating a book
+
+### 4. Update a Book
+
+Updates an existing book.
+
+-   **URL:** /:id
+-   **Method:** `PUT`
+-   **URL Params:**
+
+    -   `id=[integer]` (required)
+
+-   **Data Params:** Same as for creating a book, all fields optional
+
+#### Success Response:
+
+-   **Code:** 200
+-   **Content:** Same as the response for creating a book
+
+### 5. Delete a Book
+
+Deletes a specific book.
+
+-   **URL:** /:id
+-   **Method:** `DELETE`
+-   **URL Params:**
+
+    -   `id=[integer]` (required)
+
+#### Success Response:
+
+-   **Code:** 204
+-   **Content:** No content
+
+## Error Responses
+
+### Code: 401 UNAUTHORIZED
+
+-   **Content:** `{ "message": "Unauthenticated." }`
+
+### OR
+
+### Code: 403 FORBIDDEN
+
+-   **Content:** `{ "message": "Unauthorized action." }`
+
+### OR
+
+### Code: 404 NOT FOUND
+
+-   **Content:** `{ "message": "Book not found." }`
+
+### OR
+
+### Code: 422 UNPROCESSABLE ENTITY
+
+-   **Content:**
+
+    ```json
+    {
+        "message": "The given data was invalid.",
+        "errors": {
+            "title": ["The title field is required."]
+        }
+    }
+    ```
+
+## Environment Variables
+
+The following environment variables should be set:
+
+-   `APP_URL`: The base URL of your application
+-   `DB_DATABASE`: The name of your database
+-   `DB_USERNAME`: Your database username
+-   `DB_PASSWORD`: Your database password
+-   `JWT_SECRET`: Secret key for JWT token generation
+
+## Notes
+
+-   All text fields (title, description) are translatable and should be provided as objects with language keys (e.g., "en", "ar").
+-   The `img` field for creating/updating a book should be a base64 encoded string of the image file.
+-   Ensure proper error handling and validation in your client application when interacting with these endpoints.
