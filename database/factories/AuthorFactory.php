@@ -16,22 +16,10 @@ class AuthorFactory extends Factory
     public function definition()
     {
         return [
-            'first_name' => [
-                'en' => $this->faker->firstName(),
-                'ar' => $this->faker->firstName(),
-            ],
-            'last_name' => [
-                'en' => $this->faker->lastName(),
-                'ar' => $this->faker->lastName(),
-            ],
-            'middle_name' => $this->faker->boolean(70) ? [
-                'en' => $this->faker->firstName(),
-                'ar' => $this->faker->firstName(),
-            ] : null,
-            'biography' => [
-                'en' => $this->faker->paragraphs(3, true),
-                'ar' => $this->faker->paragraphs(3, true),
-            ],
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'middle_name' => $this->faker->boolean(70) ? $this->faker->firstName() : null,
+            'biography' => $this->faker->paragraphs(3, true),
             'birth_date' => $this->faker->dateTimeBetween('-100 years', '-18 years')->format('Y-m-d'),
             'death_date' => function (array $attributes) {
                 return $this->faker->optional(0.3)->dateTimeBetween($attributes['birth_date'], 'now')?->format('Y-m-d');

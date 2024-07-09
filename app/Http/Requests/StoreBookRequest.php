@@ -22,8 +22,7 @@ class StoreBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|array',
-            'title.*' => 'required|string|max:255',
+            'title' => 'required|string',
             'author_id' => 'required|exists:authors,id',
             'category_id' => 'required|exists:categories,id',
             'publisher_id' => 'required|exists:publishers,id',
@@ -37,8 +36,7 @@ class StoreBookRequest extends FormRequest
             'format' => 'required|in:PDF,Hard Copy,Audiobook',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
-            'description' => 'nullable|array',
-            'description.*' => 'string',
+            'description' => 'nullable|string',
             'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }

@@ -16,10 +16,7 @@ class PublisherFactory extends Factory
     public function definition()
     {
         return [
-            'publisher_name' => [
-                'en' => $this->faker->company(),
-                'ar' => $this->faker->company(),
-            ],
+            'publisher_name' => $this->faker->company(),
             'logo' => $this->faker->imageUrl(200, 200, 'business', true),
             'location' => $this->faker->optional()->city(),
             'website' => $this->faker->optional()->url(),

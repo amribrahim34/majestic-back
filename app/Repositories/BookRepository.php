@@ -38,7 +38,9 @@ class BookRepository implements BookRepositoryInterface
             $path = $data['img']->store('book_images', 'public');
             $data['img'] = $path;
         }
-        $data['publication_date'] = Carbon::parse($data['publication_date'])->format('Y-m-d H:i:s');
+        if (isset($data['publication_date'])) {
+            $data['publication_date'] = Carbon::parse($data['publication_date'])->format('Y-m-d H:i:s');
+        }
         $book->update($data);
         return $book->load(['author', 'category', 'publisher', 'language']);
     }

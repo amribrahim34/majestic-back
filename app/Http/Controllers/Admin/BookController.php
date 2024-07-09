@@ -10,6 +10,8 @@ use App\Models\Book;
 use App\Repositories\Interfaces\BookRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Imports\BooksImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BookController extends Controller
 {
@@ -63,5 +65,19 @@ class BookController extends Controller
     {
         $this->bookRepository->delete($id);
         return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+        Excel::import(new BooksImport, $request->file('file'));
+        return response()->json(['msg' => "success"], Response::HTTP_CREATED);
+    }
+
+    public function downloadTemplate()
+    {
+        return response()->download(storage_path('app/templates/book_import_template.xlsx'));
     }
 }

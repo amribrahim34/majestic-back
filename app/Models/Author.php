@@ -8,7 +8,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Author extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory;
 
     protected $fillable = [
         'first_name',
@@ -20,10 +20,10 @@ class Author extends Model
         'country',
     ];
 
-    public $translatable = [
-        'first_name',
-        'middle_name',
-        'last_name',
-        'biography',
-    ];
+    // public $translatable = [
+    //     'first_name',
+    //     'middle_name',
+    //     'last_name',
+    //     'biography',
+    // ];
 }

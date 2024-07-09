@@ -8,7 +8,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Book extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory;
 
     protected $fillable = [
         'title',
@@ -30,7 +30,7 @@ class Book extends Model
     ];
 
     // Specify which attributes are translatable.
-    public $translatable = ['title', 'description'];
+    // public $translatable = ['title', 'description'];
 
 
 

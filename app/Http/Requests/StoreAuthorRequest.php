@@ -22,14 +22,10 @@ class StoreAuthorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'required|array',
-            'first_name.*' => 'string|max:255',
-            'last_name' => 'required|array',
-            'last_name.*' => 'string|max:255',
-            'middle_name' => 'nullable|array',
-            'middle_name.*' => 'string|max:255',
-            'biography' => 'nullable|array',
-            'biography.*' => 'string|max:255',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'middle_name' => 'nullable|string',
+            'biography' => 'nullable|string',
             'birth_date' => 'nullable|date',
             'death_date' => 'nullable|date|after_or_equal:birth_date',
             'country' => 'nullable|string|max:255',

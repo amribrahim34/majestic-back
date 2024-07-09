@@ -22,8 +22,7 @@ class UpdatePublisherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'publisher_name' => 'sometimes|array',
-            'publisher_name.*' => 'string|max:255',
+            'publisher_name' => 'sometimes|string',
             'logo' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'location' => 'sometimes|string|max:255',
             'website' => 'sometimes|url|max:255',

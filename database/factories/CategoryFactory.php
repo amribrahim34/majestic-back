@@ -16,15 +16,9 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'category_name' => [
-                'en' => $this->faker->unique()->words(2, true),
-                'ar' => $this->faker->unique()->words(2, true),
-            ],
+            'category_name' => $this->faker->unique()->words(2, true),
             'parent_id' => null,
-            'description' => [
-                'en' => $this->faker->optional()->paragraph(),
-                'ar' => $this->faker->optional()->paragraph(),
-            ],
+            'description' =>  $this->faker->optional()->paragraph(),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => function (array $attributes) {
                 return $this->faker->dateTimeBetween($attributes['created_at'], 'now');
@@ -63,10 +57,7 @@ class CategoryFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'description' => [
-                    'en' => $this->faker->paragraph(),
-                    'ar' => $this->faker->paragraph(),
-                ],
+                'description' => $this->faker->paragraph(),
             ];
         });
     }

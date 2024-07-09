@@ -5,7 +5,7 @@ namespace Tests\Unit\Controllers\Admin;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
-use App\Http\Resources\BookResource;
+use App\Http\Resources\Admin\BookResource;
 use App\Models\Book;
 use App\Repositories\Interfaces\BookRepositoryInterface;
 use Illuminate\Http\Response;
@@ -43,7 +43,7 @@ class BookControllerTest extends TestCase
 
     public function testStore()
     {
-        $validatedData = ['title' => ['en' => 'Test Book'], 'author_id' => 1];
+        $validatedData = ['title' =>  'Test Book', 'author_id' => 1];
         $book = new Book($validatedData);
 
         $request = Mockery::mock(StoreBookRequest::class);
@@ -59,7 +59,7 @@ class BookControllerTest extends TestCase
 
     public function testShow()
     {
-        $book = new Book(['id' => 1, 'title' => ['en' => 'Test Book']]);
+        $book = new Book(['id' => 1, 'title' => 'Test Book']);
 
         $this->bookRepository->shouldReceive('findById')->once()->with(1)->andReturn($book);
 
@@ -72,7 +72,7 @@ class BookControllerTest extends TestCase
     public function testUpdate()
     {
         $id = 1;
-        $validatedData = ['title' => ['en' => 'Updated Book']];
+        $validatedData = ['title' => 'Updated Book'];
         $updatedBook = new Book(['id' => $id] + $validatedData);
 
         $request = Mockery::mock(UpdateBookRequest::class);

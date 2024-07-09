@@ -18,7 +18,7 @@ class BookResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'title' => $this->getTranslations('title'),
+            'title' => $this->title,
             'author' => new AuthorResource($this->whenLoaded('author')),
             'author_id' => $this->author_id,
             'category' => new CategoryResource($this->whenLoaded('category')),
@@ -36,7 +36,7 @@ class BookResource extends JsonResource
             'format' => $this->format,
             'price' => $this->price,
             'stock_quantity' => $this->stock_quantity,
-            'description' => $this->getTranslations('description'),
+            'description' => $this->description,
             'img' => $this->img,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),

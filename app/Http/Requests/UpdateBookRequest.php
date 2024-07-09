@@ -22,8 +22,7 @@ class UpdateBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'sometimes|array',
-            'title.*' => 'string|max:255',
+            'title' => 'sometimes|string',
             'author_id' => 'sometimes|exists:authors,id',
             'category_id' => 'sometimes|exists:categories,id',
             'publisher_id' => 'sometimes|exists:publishers,id',
@@ -37,8 +36,7 @@ class UpdateBookRequest extends FormRequest
             'format' => 'sometimes|in:PDF,Hard Copy,Audiobook',
             'price' => 'sometimes|numeric|min:0',
             'stock_quantity' => 'sometimes|integer|min:0',
-            'description' => 'sometimes|array',
-            'description.*' => 'string',
+            'description' => 'sometimes|string',
         ];
     }
 }

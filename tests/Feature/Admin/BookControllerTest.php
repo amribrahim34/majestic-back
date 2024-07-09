@@ -37,7 +37,7 @@ class BookControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'title', 'author', 'category', 'publisher', 'language']
+                    '*' => ['id', 'title', 'author', 'category', 'publisher', 'language', 'publication_date']
                 ],
                 'links',
                 'meta'
@@ -55,7 +55,7 @@ class BookControllerTest extends TestCase
         Storage::fake('public');
 
         $data = [
-            'title' => ['en' => 'Test Book'],
+            'title' => 'Test Book',
             'author_id' => $author->id,
             'category_id' => $category->id,
             'publisher_id' => $publisher->id,
@@ -67,7 +67,7 @@ class BookControllerTest extends TestCase
             'format' => 'Hard Copy',
             'price' => 29.99,
             'stock_quantity' => 100,
-            'description' => ['en' => 'A test book description'],
+            'description' => 'A test book description',
             'img' => UploadedFile::fake()->image('book.jpg')
         ];
 
@@ -81,7 +81,7 @@ class BookControllerTest extends TestCase
 
         // Add this to check if the book was created with correct data
         $this->assertDatabaseHas('books', [
-            'title->en' => 'Test Book',
+            'title' => 'Test Book',
             'author_id' => $author->id,
             'category_id' => $category->id,
             'publisher_id' => $publisher->id,
@@ -115,7 +115,7 @@ class BookControllerTest extends TestCase
         $newAuthor = Author::factory()->create();
 
         $data = [
-            'title' => ['en' => 'Updated Book Title'],
+            'title' => 'Updated Book Title',
             'author_id' => $newAuthor->id,
         ];
 
@@ -137,7 +137,7 @@ class BookControllerTest extends TestCase
 
         $this->assertDatabaseHas('books', [
             'id' => $book->id,
-            'title->en' => 'Updated Book Title',
+            'title' => 'Updated Book Title',
             'author_id' => $newAuthor->id,
         ]);
     }

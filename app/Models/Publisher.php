@@ -8,7 +8,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Publisher extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory;
 
     protected $fillable = [
         'publisher_name',
@@ -17,5 +17,5 @@ class Publisher extends Model
         'website',
     ];
 
-    public $translatable = ['publisher_name'];
+    // public $translatable = ['publisher_name'];
 }

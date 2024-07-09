@@ -44,6 +44,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/books/{book}', [BookController::class, 'show']);
         Route::put('/books/{book}', [BookController::class, 'update']);
         Route::delete('/books/{book}', [BookController::class, 'destroy']);
+
+        Route::post('/books/import', [BookController::class, 'import']);
+        Route::get('/template/book', [BookController::class, 'downloadTemplate']);
     });
 
     Route::middleware('admin')->group(function () {

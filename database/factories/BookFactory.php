@@ -19,10 +19,7 @@ class BookFactory extends Factory
     public function definition()
     {
         return [
-            'title' => [
-                'en' => $this->faker->sentence(3),
-                'ar' => $this->faker->sentence(3),
-            ],
+            'title' => $this->faker->sentence(3),
             'author_id' => Author::factory(),
             'category_id' => Category::factory(),
             'publisher_id' => Publisher::factory(),
@@ -36,10 +33,7 @@ class BookFactory extends Factory
             'format' => $this->faker->randomElement(['PDF', 'Hard Copy', 'Audiobook']),
             'price' => $this->faker->randomFloat(2, 5, 100),
             'stock_quantity' => $this->faker->numberBetween(0, 1000),
-            'description' => [
-                'en' => $this->faker->paragraph(),
-                'ar' => $this->faker->paragraph(),
-            ],
+            'description' => $this->faker->paragraph(),
             'img' => $this->faker->imageUrl(300, 400, 'books'),
         ];
     }
