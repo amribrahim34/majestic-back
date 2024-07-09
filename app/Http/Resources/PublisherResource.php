@@ -16,7 +16,7 @@ class PublisherResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'publisher_name' => $this->getTranslations('publisher_name'),
+            'publisher_name' => $this->publisher_name,
             'logo' => $this->logo,
             'location' => $this->location,
             'website' => $this->website,

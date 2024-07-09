@@ -62,15 +62,26 @@ class BooksImport implements ToModel, WithHeadingRow
 
     private function findOrCreateAuthor($authorName)
     {
+        // Check if the author name is empty
+        if (empty(trim($authorName))) {
+            return null;
+        }
+
         // Split the author name
         $nameParts = explode(' ', trim($authorName));
 
-        // Assume the last part is the last name
-        $lastName = array_pop($nameParts);
+        // If there's only one part, assume it's the last name
+        if (count($nameParts) == 1) {
+            $lastName = $nameParts[0];
+            $firstName = ''; // Set to empty string instead of null
+        } else {
+            // Assume the last part is the last name
+            $lastName = array_pop($nameParts);
 
-        // If there are still parts, assume the first is the first name and the rest (if any) are the middle name
-        $firstName = array_shift($nameParts);
-        $middleName = !empty($nameParts) ? implode(' ', $nameParts) : null;
+            // If there are still parts, assume the first is the first name and the rest (if any) are the middle name
+            $firstName = array_shift($nameParts);
+            $middleName = !empty($nameParts) ? implode(' ', $nameParts) : null;
+        }
 
         // Try to find the author
         $author = Author::where('last_name', $lastName)
@@ -81,7 +92,7 @@ class BooksImport implements ToModel, WithHeadingRow
         if (!$author) {
             $author = Author::create([
                 'first_name' => $firstName,
-                'middle_name' => $middleName,
+                'middle_name' => $middleName ?? null,
                 'last_name' =>  $lastName,
             ]);
         }

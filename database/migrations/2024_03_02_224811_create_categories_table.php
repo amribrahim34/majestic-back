@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->json('category_name', 255);
+            $table->string('category_name', 255);
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->json('description')->nullable();
+            $table->string('description')->nullable();
 
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
 

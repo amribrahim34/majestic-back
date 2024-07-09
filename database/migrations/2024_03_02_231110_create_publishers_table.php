@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('publishers', function (Blueprint $table) {
             $table->id();
-            $table->json('publisher_name', 255);
+            $table->string('publisher_name', 255);
             $table->string('logo', 255);
             $table->string('location', 255)->nullable();
             $table->string('website', 255)->nullable();

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePublisherRequest;
 use App\Http\Requests\UpdatePublisherRequest;
-use App\Http\Resources\PublisherResource;
+use App\Http\Resources\Admin\PublisherResource;
 use App\Models\Publisher;
 use App\Repositories\Interfaces\PublisherRepositoryInterface;
 use Illuminate\Http\Request;
