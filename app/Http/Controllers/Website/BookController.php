@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\Website\BookRepositoryInterface;
 use Illuminate\Http\Request;
+use App\Http\Resources\BookResource;
 
 class BookController extends Controller
 {
@@ -19,19 +20,19 @@ class BookController extends Controller
     {
         $filters = $this->getFiltersFromRequest($request);
         $books = $this->bookRepository->getAllBooks($filters);
-        return response()->json($books);
+        return BookResource::collection($books);
     }
 
     public function show($id)
     {
         $book = $this->bookRepository->getBookById($id);
-        return response()->json($book);
+        return new BookResource($book);
     }
 
     public function byCategory($categoryId)
     {
         $books = $this->bookRepository->getBooksByCategory($categoryId);
-        return response()->json($books);
+        return BookResource::collection($books);
     }
 
     public function search(Request $request)
@@ -39,21 +40,21 @@ class BookController extends Controller
         $query = $request->get('q');
         $filters = $this->getFiltersFromRequest($request);
         $books = $this->bookRepository->searchBooks($query, $filters);
-        return response()->json($books);
+        return BookResource::collection($books);
     }
 
     public function latest(Request $request)
     {
         $limit = $request->get('limit', 10);
         $books = $this->bookRepository->getLatestBooks($limit);
-        return response()->json($books);
+        return BookResource::collection($books);
     }
 
     public function bestSellers(Request $request)
     {
         $limit = $request->get('limit', 10);
         $books = $this->bookRepository->getBestSellingBooks($limit);
-        return response()->json($books);
+        return BookResource::collection($books);
     }
 
     private function getFiltersFromRequest(Request $request): array
