@@ -19,7 +19,7 @@ class BookResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'author' => new AuthorResource($this->whenLoaded('author')),
+            'authors' => AuthorResource::collection($this->whenLoaded('authors')),
             'author_id' => $this->author_id,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'category_id' => $this->category_id,

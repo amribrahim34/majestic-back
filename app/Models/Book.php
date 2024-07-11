@@ -12,7 +12,6 @@ class Book extends Model
 
     protected $fillable = [
         'title',
-        'author_id',
         'category_id',
         'publisher_id',
         'publication_date',
@@ -32,12 +31,6 @@ class Book extends Model
     // Specify which attributes are translatable.
     // public $translatable = ['title', 'description'];
 
-
-
-    public function author()
-    {
-        return $this->belongsTo(Author::class);
-    }
 
     public function category()
     {
@@ -60,5 +53,10 @@ class Book extends Model
             return asset('storage/book_images/' . $this->img);
         }
         return asset('storage/book_images/default.png');
+    }
+
+    public function authors()
+    {
+        return $this->belongsToMany(Author::class);
     }
 }

@@ -23,7 +23,6 @@ class StoreBookRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'author_id' => 'required|exists:authors,id',
             'category_id' => 'required|exists:categories,id',
             'publisher_id' => 'required|exists:publishers,id',
             'publication_date' => 'nullable|date',

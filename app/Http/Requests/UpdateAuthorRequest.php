@@ -22,9 +22,7 @@ class UpdateAuthorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'sometimes|required|string',
-            'last_name' => 'sometimes|required|string',
-            'middle_name' => 'sometimes|string',
+            'name' => 'sometimes|string',
             'biography' => 'sometimes|string',
             'birth_date' => 'sometimes|date',
             'death_date' => 'sometimes|date|after_or_equal:birth_date',

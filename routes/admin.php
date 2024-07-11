@@ -53,4 +53,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/languages', [LanguageController::class, 'index']);
         Route::get('/languages/{language}', [LanguageController::class, 'show']);
     });
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/verify-token', function () {
+            return response()->json(['message' => 'Token is valid']);
+        });
+    });
 });

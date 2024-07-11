@@ -3,7 +3,6 @@
 namespace App\Imports;
 
 use App\Models\Author;
-use Illuminate\Support\Collection;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Publisher;
@@ -11,18 +10,15 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Carbon\Carbon;
 
-
 class BooksImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        $authorId = $this->findOrCreateAuthor($row['author']);
         $categoryId = $this->findOrCreateCategory($row['category'], $row['subcategory']);
         $publisherId = $this->findOrCreatePublisher($row['publisher']);
 
-        return new Book([
+        $book = new Book([
             'title' => $row['title'],
-            'author_id' => $authorId ?? null,
             'category_id' => $categoryId ?? null,
             'publisher_id' =>  $publisherId ?? null,
             'publication_date' => $this->parseDate($row['publication_date']) ?? null,
@@ -38,6 +34,19 @@ class BooksImport implements ToModel, WithHeadingRow
             'description' => $row['description'] ?? null,
             'img' => $row['img'] ?? null,
         ]);
+
+        $book->save();
+
+        // Handle multiple authors
+        $authorNames = explode(',', $row['author']);
+        foreach ($authorNames as $authorName) {
+            $authorId = $this->findOrCreateAuthor(trim($authorName));
+            if ($authorId) {
+                $book->authors()->attach($authorId);
+            }
+        }
+
+        return $book;
     }
 
     private function parseDate($date)
@@ -46,63 +55,35 @@ class BooksImport implements ToModel, WithHeadingRow
             return null;
         }
 
-        // Try parsing as a full date
         try {
             return Carbon::parse($date)->format('Y-m-d');
         } catch (\Exception $e) {
-            // If parsing fails, check if it's just a year
             if (preg_match('/^\d{4}$/', $date)) {
                 return Carbon::createFromFormat('Y', $date)->startOfYear()->format('Y-m-d');
             }
         }
 
-        // If all parsing attempts fail, return null
         return null;
     }
 
     private function findOrCreateAuthor($authorName)
     {
-        // Check if the author name is empty
         if (empty(trim($authorName))) {
             return null;
         }
 
-        // Split the author name
-        $nameParts = explode(' ', trim($authorName));
+        $name = trim($authorName);
 
-        // If there's only one part, assume it's the last name
-        if (count($nameParts) == 1) {
-            $lastName = $nameParts[0];
-            $firstName = ''; // Set to empty string instead of null
-        } else {
-            // Assume the last part is the last name
-            $lastName = array_pop($nameParts);
-
-            // If there are still parts, assume the first is the first name and the rest (if any) are the middle name
-            $firstName = array_shift($nameParts);
-            $middleName = !empty($nameParts) ? implode(' ', $nameParts) : null;
-        }
-
-        // Try to find the author
-        $author = Author::where('last_name', $lastName)
-            ->where('first_name', $firstName)
-            ->first();
-
-        // If not found, create a new author
-        if (!$author) {
-            $author = Author::create([
-                'first_name' => $firstName,
-                'middle_name' => $middleName ?? null,
-                'last_name' =>  $lastName,
-            ]);
-        }
+        $author = Author::firstOrCreate(
+            ['name' => $name],
+            ['name' => $name]
+        );
 
         return $author->id;
     }
 
     private function findOrCreateCategory($subjectName, $subSubjectName)
     {
-        // Find or create the main category
         $mainCategory = Category::firstOrCreate(
             ['category_name' => $subjectName],
             [
@@ -111,7 +92,6 @@ class BooksImport implements ToModel, WithHeadingRow
             ]
         );
 
-        // Find or create the sub-category
         $subCategory = Category::firstOrCreate(
             ['category_name' => $subSubjectName, 'parent_id' => $mainCategory->id],
             [
@@ -127,9 +107,7 @@ class BooksImport implements ToModel, WithHeadingRow
     {
         return Publisher::firstOrCreate(
             ['publisher_name' => $publisherName],
-            [
-                'publisher_name' => $publisherName,
-            ]
+            ['publisher_name' => $publisherName]
         )->id;
     }
 }

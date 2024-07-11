@@ -18,9 +18,7 @@ class AuthorResource extends JsonResource
         $locale = $request->header('Accept-Language', app()->getLocale());
         return [
             'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'middle_name' => $this->middle_name, // false to return null if no translation is available
+            'name' => $this->name,
             'biography' => $this->biography,
             'birth_date' => $this->birth_date,
             'death_date' => $this->death_date,

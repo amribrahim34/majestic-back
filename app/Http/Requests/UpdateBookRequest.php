@@ -23,7 +23,6 @@ class UpdateBookRequest extends FormRequest
     {
         return [
             'title' => 'sometimes|string',
-            'author_id' => 'sometimes|exists:authors,id',
             'category_id' => 'sometimes|exists:categories,id',
             'publisher_id' => 'sometimes|exists:publishers,id',
             'publication_date' => 'nullable|date',

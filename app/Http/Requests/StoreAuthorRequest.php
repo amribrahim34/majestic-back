@@ -22,9 +22,7 @@ class StoreAuthorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'middle_name' => 'nullable|string',
+            'name' => 'required|string',
             'biography' => 'nullable|string',
             'birth_date' => 'nullable|date',
             'death_date' => 'nullable|date|after_or_equal:birth_date',

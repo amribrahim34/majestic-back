@@ -13,12 +13,12 @@ class BookRepository implements BookRepositoryInterface
     public function all()
     {
         $limit = request()->query->get('limit', 10);
-        return Book::with(['author', 'category', 'publisher', 'language'])->paginate($limit);
+        return Book::with(['authors', 'category', 'publisher', 'language'])->paginate($limit);
     }
 
     public function findById($id)
     {
-        return Book::with(['author', 'category', 'publisher', 'language'])->findOrFail($id);
+        return Book::with(['authors', 'category', 'publisher', 'language'])->findOrFail($id);
     }
 
     public function create(array $data)
@@ -42,7 +42,7 @@ class BookRepository implements BookRepositoryInterface
             $data['publication_date'] = Carbon::parse($data['publication_date'])->format('Y-m-d H:i:s');
         }
         $book->update($data);
-        return $book->load(['author', 'category', 'publisher', 'language']);
+        return $book->load(['authors', 'category', 'publisher', 'language']);
     }
 
     public function delete($id)
