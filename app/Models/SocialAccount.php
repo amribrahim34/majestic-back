@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WishList extends Model
+class SocialAccount extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id'];
-
-    public function items()
-    {
-        return $this->hasMany(WishListItem::class);
-    }
+    protected $fillable = [
+        'user_id',
+        'provider',
+        'provider_id',
+        'provider_token',
+        'provider_refresh_token',
+    ];
 
     public function user()
     {

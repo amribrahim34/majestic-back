@@ -36,8 +36,8 @@ class StoreAuthorRequest extends FormRequest
     {
         // Optionally, you can customize the error messages for specific rules
         return [
-            'first_name.required' => __('validation.required', ['attribute' => 'first name']),
-            'last_name.required' => __('validation.required', ['attribute' => 'last name']),
+            'name.required' => __('validation.required', ['attribute' => 'name']),
+            // 'last_name.required' => __('validation.required', ['attribute' => 'last name']),
             // Add other messages as needed
         ];
     }
