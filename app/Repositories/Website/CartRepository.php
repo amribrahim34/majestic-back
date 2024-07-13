@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Website;
 
 use App\Models\Cart;
 use App\Models\CartItem;
@@ -11,7 +11,7 @@ class CartRepository implements CartRepositoryInterface
 {
     public function getCart($userId)
     {
-        return Cart::with(['items.book'])->where('user_id', $userId)->first();
+        return Cart::with(['items.book'])->firstOrCreate(['user_id' => $userId]);
     }
 
     public function addItem($userId, $bookId, $quantity)

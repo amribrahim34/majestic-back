@@ -6,7 +6,6 @@ namespace App\Providers;
 
 use App\Repositories\AuthorRepository;
 use App\Repositories\BookRepository;
-use App\Repositories\CartRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\CategoryRepository;
 use App\Repositories\Interfaces\AuthorRepositoryInterface;
@@ -21,6 +20,7 @@ use App\Repositories\Interfaces\WishListRepositoryInterface;
 use App\Repositories\LanguageRepository;
 use App\Repositories\PublisherRepository;
 use App\Repositories\Website\BookRepository as WebsiteBookRepository;
+use App\Repositories\Website\CartRepository;
 use App\Repositories\Website\SocialAuthRepository;
 use App\Repositories\WishListRepository;
 
