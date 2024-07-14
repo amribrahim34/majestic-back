@@ -10,4 +10,7 @@ interface BookRepositoryInterface
     public function getBestSellingBooks($limit = 10);
     public function getAllBooks(array $filters = []);
     public function searchBooks($query, array $filters = []);
+    public function getPriceRange();
+    public function getYearRange();
+    public function getDistinctFormats();
 }

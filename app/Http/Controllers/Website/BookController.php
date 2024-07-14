@@ -69,4 +69,19 @@ class BookController extends Controller
             'author'
         ]);
     }
+
+    public function getPriceRange()
+    {
+        return $this->bookRepository->getPriceRange();
+    }
+
+    public function getYearRange()
+    {
+        return $this->bookRepository->getYearRange();
+    }
+
+    public function getFormats()
+    {
+        return $this->bookRepository->getDistinctFormats();
+    }
 }

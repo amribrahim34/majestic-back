@@ -92,4 +92,31 @@ class BookRepository implements BookRepositoryInterface
 
         return $query;
     }
+
+    public function getPriceRange()
+    {
+        $minPrice = Book::min('price');
+        $maxPrice = Book::max('price');
+
+        return [
+            'min' => is_numeric($minPrice) ? (float)$minPrice : 0,
+            'max' => is_numeric($maxPrice) ? (float)$maxPrice : 0
+        ];
+    }
+
+    public function getYearRange()
+    {
+        $minYear = Book::min('publication_date');
+        $maxYear = Book::max('publication_date');
+
+        return [
+            'min' => is_numeric($minYear) ? (int)date('Y', strtotime($minYear)) : 0,
+            'max' => is_numeric($maxYear) ? (int)date('Y', strtotime($maxYear)) : date('Y')
+        ];
+    }
+
+    public function getDistinctFormats()
+    {
+        return Book::distinct('format')->pluck('format');
+    }
 }

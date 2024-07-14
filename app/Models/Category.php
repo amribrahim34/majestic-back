@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
 
 class Category extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory;
 
     protected $fillable = [
         'category_name',
@@ -16,7 +15,7 @@ class Category extends Model
         'description',
     ];
 
-    public $translatable = ['category_name', 'description']; // Specify the attributes you want to be translatable
+    // public $translatable = ['category_name', 'description']; // Specify the attributes you want to be translatable
 
 
     public function parent()

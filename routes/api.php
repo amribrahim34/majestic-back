@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\Website\AuthController;
+use App\Http\Controllers\Website\AuthorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Website\BookController;
 use App\Http\Controllers\Website\CartController;
+use App\Http\Controllers\Website\CategoryController;
+use App\Http\Controllers\Website\FormatController;
+use App\Http\Controllers\Website\PublisherController;
 use App\Http\Controllers\Website\WishListController;
 use App\Http\Controllers\Website\SocialAuthController;
 
@@ -43,6 +47,15 @@ Route::prefix('books')->group(function () {
     Route::get('/latest', [BookController::class, 'latest']);
     Route::get('/best-sellers', [BookController::class, 'bestSellers']);
 });
+
+
+Route::get('/price-range', [BookController::class, 'getPriceRange']);
+Route::get('/year-range', [BookController::class, 'getYearRange']);
+Route::get('/formats', [BookController::class, 'getFormats']);
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/publishers', [PublisherController::class, 'index']);
+Route::get('/authors', [AuthorController::class, 'index']);
+// Route::get('/formats', [FormatController::class, 'index']);
 
 
 Route::prefix('cart')->middleware(['auth:sanctum'])->group(function () {

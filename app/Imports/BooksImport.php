@@ -37,10 +37,9 @@ class BooksImport implements ToModel, WithHeadingRow
 
         $book->save();
 
-        // Handle multiple authors
-        $authorNames = explode(',', $row['author']);
+        $authorNames = $this->parseAuthors($row['author']);
         foreach ($authorNames as $authorName) {
-            $authorId = $this->findOrCreateAuthor(trim($authorName));
+            $authorId = $this->findOrCreateAuthor($authorName);
             if ($authorId) {
                 $book->authors()->attach($authorId);
             }
@@ -66,6 +65,19 @@ class BooksImport implements ToModel, WithHeadingRow
         return null;
     }
 
+    private function parseAuthors($authorString)
+    {
+        // Split authors by ' - ' or ' ، '
+        $authors = preg_split('/\s*-\s*|\s*،\s*/', $authorString);
+
+        // Remove any leading 'د/' or 'أ.د.' from each author name
+        $authors = array_map(function ($author) {
+            return preg_replace('/^(د\/|أ\.د\.|د\.|أ\.|أ د\/)?\s*/', '', trim($author));
+        }, $authors);
+
+        return array_filter($authors); // Remove any empty elements
+    }
+
     private function findOrCreateAuthor($authorName)
     {
         if (empty(trim($authorName))) {
@@ -84,25 +96,26 @@ class BooksImport implements ToModel, WithHeadingRow
 
     private function findOrCreateCategory($subjectName, $subSubjectName)
     {
+        if (empty($subjectName)) {
+            return null;
+        }
+
         $mainCategory = Category::firstOrCreate(
             ['category_name' => $subjectName],
-            [
-                'category_name' => $subjectName,
-                'parent_id' => null
-            ]
+            ['category_name' => $subjectName]
         );
+
+        if (empty($subSubjectName)) {
+            return $mainCategory->id;
+        }
 
         $subCategory = Category::firstOrCreate(
             ['category_name' => $subSubjectName, 'parent_id' => $mainCategory->id],
-            [
-                'category_name' => $subSubjectName,
-                'parent_id' => $mainCategory->id
-            ]
+            ['category_name' => $subSubjectName, 'parent_id' => $mainCategory->id]
         );
 
         return $subCategory->id;
     }
-
     private function findOrCreatePublisher($publisherName)
     {
         return Publisher::firstOrCreate(
