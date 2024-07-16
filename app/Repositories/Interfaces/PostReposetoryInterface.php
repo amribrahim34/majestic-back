@@ -11,4 +11,5 @@ interface PostRepositoryInterface
     public function create($post);
     public function edit($post, $data);
     public function delete($post);
+    public function bulkDelete($ids);
 }

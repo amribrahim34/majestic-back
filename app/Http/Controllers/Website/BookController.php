@@ -59,17 +59,32 @@ class BookController extends Controller
 
     private function getFiltersFromRequest(Request $request): array
     {
-        return $request->only([
-            'category',
-            'format',
-            'price_min',
-            'price_max',
-            'publishing_year',
-            'publisher',
-            'author'
-        ]);
-    }
+        $filters = [];
 
+        if ($request->has('category_ids')) {
+            $filters['category_ids'] = $request->input('category_ids');
+        }
+
+        if ($request->has('formats')) {
+            $filters['formats'] = $request->input('formats');
+        }
+
+        if ($request->has('price_range')) {
+            $priceRange = $request->input('price_range');
+            $filters['price_min'] = $priceRange[0] ?? null;
+            $filters['price_max'] = $priceRange[1] ?? null;
+        }
+
+        if ($request->has('year_range')) {
+            $yearRange = $request->input('year_range');
+            $filters['year_min'] = $yearRange[0] ?? null;
+            $filters['year_max'] = $yearRange[1] ?? null;
+        }
+
+        // Add other filters as needed
+
+        return $filters;
+    }
     public function getPriceRange()
     {
         return $this->bookRepository->getPriceRange();

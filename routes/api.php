@@ -58,7 +58,7 @@ Route::get('/authors', [AuthorController::class, 'index']);
 // Route::get('/formats', [FormatController::class, 'index']);
 
 
-Route::prefix('cart')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
     Route::post('/add', [CartController::class, 'addItem'])->name('cart.add');
     Route::put('/update', [CartController::class, 'updateItem'])->name('cart.update');

@@ -9,6 +9,7 @@ use App\Http\Resources\Website\CartResource;
 use App\Repositories\Interfaces\Website\CartRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -19,11 +20,16 @@ class CartController extends Controller
         $this->cartRepository = $cartRepository;
     }
 
+    private function getUserIdentifier()
+    {
+        return Auth::check() ? Auth::id() : session()->getId();
+    }
+
     public function index(): JsonResponse
     {
-        $userId = auth()->id();
-        $cart = $this->cartRepository->getCart($userId);
-        $total = $this->cartRepository->getCartTotal($userId);
+        $userIdentifier = $this->getUserIdentifier();
+        $cart = $this->cartRepository->getCart($userIdentifier);
+        $total = $this->cartRepository->getCartTotal($userIdentifier);
 
         return response()->json([
             'message' => __('cart.retrieved'),
@@ -34,9 +40,9 @@ class CartController extends Controller
 
     public function addItem(StoreCartRequest $request): JsonResponse
     {
-        $userId = auth()->id();
-        $this->cartRepository->addItem($userId, $request->book_id, $request->quantity);
-        $cart = $this->cartRepository->getCart($userId);
+        $userIdentifier = $this->getUserIdentifier();
+        $this->cartRepository->addItem($userIdentifier, $request->book_id, $request->quantity);
+        $cart = $this->cartRepository->getCart($userIdentifier);
 
         return response()->json([
             'message' => __('cart.item_added'),
@@ -46,9 +52,9 @@ class CartController extends Controller
 
     public function updateItem(UpdateCartRequest $request): JsonResponse
     {
-        $userId = auth()->id();
-        $this->cartRepository->updateItemQuantity($userId, $request->book_id, $request->quantity);
-        $cart = $this->cartRepository->getCart($userId);
+        $userIdentifier = $this->getUserIdentifier();
+        $this->cartRepository->updateItemQuantity($userIdentifier, $request->book_id, $request->quantity);
+        $cart = $this->cartRepository->getCart($userIdentifier);
 
         return response()->json([
             'message' => __('cart.item_updated'),
@@ -62,9 +68,9 @@ class CartController extends Controller
             'book_id' => 'required|exists:books,id',
         ]);
 
-        $userId = auth()->id();
-        $this->cartRepository->removeItem($userId, $request->book_id);
-        $cart = $this->cartRepository->getCart($userId);
+        $userIdentifier = $this->getUserIdentifier();
+        $this->cartRepository->removeItem($userIdentifier, $request->book_id);
+        $cart = $this->cartRepository->getCart($userIdentifier);
 
         return response()->json([
             'message' => __('cart.item_removed'),
@@ -74,8 +80,8 @@ class CartController extends Controller
 
     public function clear(): JsonResponse
     {
-        $userId = auth()->id();
-        $this->cartRepository->clearCart($userId);
+        $userIdentifier = $this->getUserIdentifier();
+        $this->cartRepository->clearCart($userIdentifier);
 
         return response()->json([
             'message' => __('cart.cleared')

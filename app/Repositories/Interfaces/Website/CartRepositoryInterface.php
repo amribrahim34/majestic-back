@@ -10,4 +10,5 @@ interface CartRepositoryInterface
     public function removeItem($userId, $bookId);
     public function clearCart($userId);
     public function getCartTotal($userId);
+    public function transferGuestCart($sessionId, $userId);
 }

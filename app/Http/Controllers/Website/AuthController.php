@@ -10,10 +10,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str; // Add this line
+use App\Repositories\Interfaces\Website\CartRepositoryInterface;
 
 
 class AuthController extends Controller
 {
+
+    protected $cartRepository;
+
+    public function __construct(CartRepositoryInterface $cartRepository)
+    {
+        $this->cartRepository = $cartRepository;
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -52,7 +61,7 @@ class AuthController extends Controller
 
         // Create user
         $user = $this->create($v);
-
+        $this->cartRepository->transferGuestCart(session()->getId(), $user->id);
         // Implement any post-registration logic here, such as login or token generation
         auth()->login($user);
         $user = Auth::user();

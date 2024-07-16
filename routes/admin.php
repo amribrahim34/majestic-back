@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AuthorController;
+use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\PublisherController;
@@ -19,6 +20,15 @@ Route::prefix('admin')->group(function () {
         Route::put('/categories/{category}', [CategoryController::class, 'update']);
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
         Route::post('/categories/bulk-delete', [CategoryController::class, 'bulkDelete']);
+    });
+
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/posts', [BlogPostController::class, 'index']);
+        Route::post('/posts', [BlogPostController::class, 'store']);
+        Route::get('/posts/{post}', [BlogPostController::class, 'show']);
+        Route::put('/posts/{post}', [BlogPostController::class, 'update']);
+        Route::delete('/posts/{post}', [BlogPostController::class, 'destroy']);
+        Route::post('/posts/bulk-delete', [BlogPostController::class, 'bulkDelete']);
     });
 
     Route::middleware('admin')->group(function () {

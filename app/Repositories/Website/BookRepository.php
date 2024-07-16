@@ -11,7 +11,9 @@ class BookRepository implements BookRepositoryInterface
 {
     public function getAllBooks(array $filters = [])
     {
-        return Book::with(['authors', 'category', 'publisher', 'language'])->paginate(20);
+        $query = Book::with(['authors', 'category', 'publisher', 'language']);
+        $query = $this->applyFilters($query, $filters);
+        return $query->paginate(9);
     }
 
     public function getBookById($id)
@@ -56,14 +58,12 @@ class BookRepository implements BookRepositoryInterface
 
     private function applyFilters(Builder $query, array $filters): Builder
     {
-        if (isset($filters['category'])) {
-            $query->whereHas('category', function ($q) use ($filters) {
-                $q->whereIn('name', $filters['category']);
-            });
+        if (isset($filters['category_ids'])) {
+            $query->whereIn('category_id', $filters['category_ids']);
         }
 
-        if (isset($filters['format'])) {
-            $query->whereIn('format', $filters['format']);
+        if (isset($filters['formats'])) {
+            $query->whereIn('format', $filters['formats']);
         }
 
         if (isset($filters['price_min'])) {
@@ -74,21 +74,15 @@ class BookRepository implements BookRepositoryInterface
             $query->where('price', '<=', $filters['price_max']);
         }
 
-        if (isset($filters['publishing_year'])) {
-            $query->whereYear('publication_date', $filters['publishing_year']);
+        if (isset($filters['year_min'])) {
+            $query->whereYear('publication_date', '>=', $filters['year_min']);
         }
 
-        if (isset($filters['publisher'])) {
-            $query->whereHas('publisher', function ($q) use ($filters) {
-                $q->whereIn('name', $filters['publisher']);
-            });
+        if (isset($filters['year_max'])) {
+            $query->whereYear('publication_date', '<=', $filters['year_max']);
         }
 
-        if (isset($filters['authors'])) {
-            $query->whereHas('authors', function ($q) use ($filters) {
-                $q->whereIn('name', $filters['authors']);
-            });
-        }
+        // Add other filters as needed
 
         return $query;
     }

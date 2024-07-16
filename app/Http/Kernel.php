@@ -38,6 +38,10 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\SetLocaleMiddleware::class,
+
+
+            \App\Http\Middleware\EnsureGuestSession::class,
+
         ],
 
         'api' => [
@@ -46,6 +50,9 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\SetLocaleMiddleware::class,
             \App\Http\Middleware\ForceJsonResponse::class,
+
+
+            \Illuminate\Session\Middleware\StartSession::class,  // Add this line
         ],
     ];
 

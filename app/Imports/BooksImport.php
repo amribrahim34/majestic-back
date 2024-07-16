@@ -16,21 +16,20 @@ class BooksImport implements ToModel, WithHeadingRow
     {
         $categoryId = $this->findOrCreateCategory($row['category'], $row['subcategory']);
         $publisherId = $this->findOrCreatePublisher($row['publisher']);
-
         $book = new Book([
             'title' => $row['title'],
             'category_id' => $categoryId ?? null,
             'publisher_id' =>  $publisherId ?? null,
             'publication_date' => $this->parseDate($row['publication_date']) ?? null,
-            'language_id' => $row['language_id'] ?? null,
-            'isbn10' => $row['isbn10'] ?? null,
-            'isbn13' => $row['isbn13'] ?? null,
+            'language_id' => $row['language_id'] ?? 1,
+            'isbn10' => $this->cleanIsbn($row['isbn10'] ?? null),
+            'isbn13' => $this->cleanIsbn($row['isbn13'] ?? null),
             'num_pages' => $row['num_pages'] ?? null,
             'dimensions' => $row['dimensions'] ?? null,
             'weight' => $row['weight'] ?? null,
             'format' => $row['format'] ?? 'Hard Copy',
-            'price' => $row['price'] ?? null,
-            'stock_quantity' => $row['stock_quantity'] ?? null,
+            'price' => $this->cleanPrice($row['price'] ?? null),
+            'stock_quantity' => $row['stock_quantity'] ?? 10,
             'description' => $row['description'] ?? null,
             'img' => $row['img'] ?? null,
         ]);
@@ -46,6 +45,28 @@ class BooksImport implements ToModel, WithHeadingRow
         }
 
         return $book;
+    }
+
+    private function cleanIsbn($isbn)
+    {
+        if (!$isbn) {
+            return null;
+        }
+
+        $cleanIsbn = preg_replace('/\D/', '', $isbn);
+        if (strlen($cleanIsbn) == 10 || strlen($cleanIsbn) == 13) {
+            return $cleanIsbn;
+        }
+        return null;
+    }
+
+    private function cleanPrice($price)
+    {
+        if (empty($price)) {
+            return 0; // or null, depending on your database schema
+        }
+        $cleanPrice = preg_replace('/[^0-9.]/', '', $price);
+        return $cleanPrice === '' ? 0 : (float)$cleanPrice;
     }
 
     private function parseDate($date)

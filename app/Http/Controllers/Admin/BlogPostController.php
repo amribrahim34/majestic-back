@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateBlogPostRequest;
 use App\Http\Resources\Admin\PostResource;
 use App\Models\BlogPost;
 use App\Repositories\Interfaces\PostRepositoryInterface;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class BlogPostController extends Controller
 {
@@ -83,5 +85,12 @@ class BlogPostController extends Controller
     {
         $this->postRepository->delete($blogPost);
         return response()->json(['message' => __('posts.deleted')], 200);
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $v = $request->validated();
+        $this->postRepository->bulkDelete($v);
+        return response()->json(['message' => __('posts.deleted')], Response::HTTP_NO_CONTENT);
     }
 }

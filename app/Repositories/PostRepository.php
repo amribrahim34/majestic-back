@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\BlogPost;
 use App\Repositories\Interfaces\PostRepositoryInterface;
+use Illuminate\Http\UploadedFile;
 
 class PostRepository implements PostRepositoryInterface
 {
@@ -20,6 +21,10 @@ class PostRepository implements PostRepositoryInterface
 
     public function create($data)
     {
+        if (isset($data['img']) && $data['img'] instanceof UploadedFile) {
+            $path = $data['img']->store('post_images', 'public');
+            $data['img'] = $path;
+        }
         return BlogPost::create($data);
     }
 
@@ -33,5 +38,10 @@ class PostRepository implements PostRepositoryInterface
     {
         $post->delete();
         return;
+    }
+
+    public function bulkDelete($params)
+    {
+        BlogPost::whereIn('id', $params['postIds'])->delete();
     }
 }
