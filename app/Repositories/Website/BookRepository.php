@@ -82,6 +82,19 @@ class BookRepository implements BookRepositoryInterface
             $query->whereYear('publication_date', '<=', $filters['year_max']);
         }
 
+        if (isset($filters['search'])) {
+            $searchTerm = $filters['search'];
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                  ->orWhereHas('authors', function ($authorQuery) use ($searchTerm) {
+                      $authorQuery->where('name', 'like', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('category', function ($categoryQuery) use ($searchTerm) {
+                      $categoryQuery->where('category_name', 'like', "%{$searchTerm}%");
+                  });
+            });
+        }
+
         // Add other filters as needed
 
         return $query;
