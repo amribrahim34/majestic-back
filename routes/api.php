@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Website\AuthController;
 use App\Http\Controllers\Website\AuthorController;
+use App\Http\Controllers\Website\BlogPostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Website\BookController;
@@ -72,4 +73,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/wishlist/remove', [WishListController::class, 'removeItem']);
     Route::post('/wishlist/clear', [WishListController::class, 'clear']);
     Route::get('/wishlist/check', [WishListController::class, 'checkItem']);
+});
+
+
+Route::prefix('blog')->group(function () {
+    Route::get('/', [BlogPostController::class, 'index']);
+    Route::get('/recent', [BlogPostController::class, 'recent']);
+    Route::get('/tag/{tagSlug}', [BlogPostController::class, 'byTag']);
+    Route::get('/{slug}', [BlogPostController::class, 'show']);
 });

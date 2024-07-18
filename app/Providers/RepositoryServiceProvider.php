@@ -15,6 +15,7 @@ use App\Repositories\Interfaces\LanguageRepositoryInterface;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Repositories\Interfaces\PublisherRepositoryInterface;
 use App\Repositories\Interfaces\Website\AuthorRepositoryInterface as WebsiteAuthorRepositoryInterface;
+use App\Repositories\Interfaces\Website\BlogPostRepositoryInterface;
 use App\Repositories\Interfaces\Website\BookRepositoryInterface as WebsiteBookRepositoryInterface;
 use App\Repositories\Interfaces\Website\CartRepositoryInterface;
 use App\Repositories\Interfaces\Website\CategoryRepositoryInterface as WebsiteCategoryRepositoryInterface;
@@ -25,6 +26,7 @@ use App\Repositories\LanguageRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\PublisherRepository;
 use App\Repositories\Website\AuthorRepository as WebsiteAuthorRepository;
+use App\Repositories\Website\BlogPostRepository;
 use App\Repositories\Website\BookRepository as WebsiteBookRepository;
 use App\Repositories\Website\CartRepository;
 use App\Repositories\Website\CategoryRepository as WebsiteCategoryRepository;
@@ -52,5 +54,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(WebsitePublisherRepositoryInterface::class, WebsitePublisherRepository::class);
         $this->app->bind(WebsiteAuthorRepositoryInterface::class, WebsiteAuthorRepository::class);
         $this->app->bind(PostRepositoryInterface::class, PostRepository::class);
+        $this->app->bind(BlogPostRepositoryInterface::class, BlogPostRepository::class);
     }
 }
