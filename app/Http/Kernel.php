@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\SetLocaleMiddleware::class,
 
 
-            \App\Http\Middleware\EnsureGuestSession::class,
+            // \App\Http\Middleware\EnsureGuestSession::class,
 
         ],
 

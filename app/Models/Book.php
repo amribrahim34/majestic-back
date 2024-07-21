@@ -51,9 +51,9 @@ class Book extends Model
     public function getImageAttribute()
     {
         if ($this->img) {
-            return asset('storage/book_images/' . $this->img);
+            return asset('storage/book_covers/' . $this->img);
         }
-        return asset('storage/book_images/default.png');
+        return asset('storage/book_covers/default.png');
     }
 
     public function authors()
