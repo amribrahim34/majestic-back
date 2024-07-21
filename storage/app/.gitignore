@@ -1,5 +1,4 @@
-*
+
 !public/
 !templates/
-!book_covers/
 !.gitignore
