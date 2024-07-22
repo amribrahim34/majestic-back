@@ -10,6 +10,6 @@ class CategoryRepository implements CategoryRepositoryInterface
 {
     public function getAllCategories()
     {
-        return Category::all();
+        return Category::withCount('books')->get();
     }
 }

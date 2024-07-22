@@ -86,12 +86,12 @@ class BookRepository implements BookRepositoryInterface
             $searchTerm = $filters['search'];
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
-                  ->orWhereHas('authors', function ($authorQuery) use ($searchTerm) {
-                      $authorQuery->where('name', 'like', "%{$searchTerm}%");
-                  })
-                  ->orWhereHas('category', function ($categoryQuery) use ($searchTerm) {
-                      $categoryQuery->where('category_name', 'like', "%{$searchTerm}%");
-                  });
+                    ->orWhereHas('authors', function ($authorQuery) use ($searchTerm) {
+                        $authorQuery->where('name', 'like', "%{$searchTerm}%");
+                    })
+                    ->orWhereHas('category', function ($categoryQuery) use ($searchTerm) {
+                        $categoryQuery->where('category_name', 'like', "%{$searchTerm}%");
+                    });
             });
         }
 
