@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 
 Route::prefix('books')->group(function () {
     Route::get('/', [BookController::class, 'index']);
-    Route::get('/{id}', [BookController::class, 'show']);
+    Route::get('/{id}/show', [BookController::class, 'show']);
     Route::get('/category/{categoryId}', [BookController::class, 'byCategory']);
     Route::get('/search', [BookController::class, 'search']);
     Route::get('/latest', [BookController::class, 'latest']);

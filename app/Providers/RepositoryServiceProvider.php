@@ -21,7 +21,7 @@ use App\Repositories\Interfaces\Website\CartRepositoryInterface;
 use App\Repositories\Interfaces\Website\CategoryRepositoryInterface as WebsiteCategoryRepositoryInterface;
 use App\Repositories\Interfaces\Website\PublisherRepositoryInterface as WebsitePublisherRepositoryInterface;
 use App\Repositories\Interfaces\Website\SocialAuthRepositoryInterface;
-use App\Repositories\Interfaces\WishListRepositoryInterface;
+use App\Repositories\Interfaces\Website\WishListRepositoryInterface;
 use App\Repositories\LanguageRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\PublisherRepository;
@@ -32,7 +32,7 @@ use App\Repositories\Website\CartRepository;
 use App\Repositories\Website\CategoryRepository as WebsiteCategoryRepository;
 use App\Repositories\Website\PublisherRepository as WebsitePublisherRepository;
 use App\Repositories\Website\SocialAuthRepository;
-use App\Repositories\WishListRepository;
+use App\Repositories\Website\WishListRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {

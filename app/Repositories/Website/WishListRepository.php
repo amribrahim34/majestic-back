@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Website;
 
 use App\Models\WishList;
 use App\Models\WishListItem;
-use App\Repositories\Interfaces\WishListRepositoryInterface;
+use App\Repositories\Interfaces\Website\WishListRepositoryInterface;
 
 class WishListRepository implements WishListRepositoryInterface
 {

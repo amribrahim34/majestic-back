@@ -7,7 +7,7 @@ use App\Http\Requests\StoreWishListRequest;
 use App\Http\Requests\UpdateWishListRequest;
 use App\Http\Resources\Website\WishListResource;
 use App\Models\WishList;
-use App\Repositories\Interfaces\WishListRepositoryInterface;
+use App\Repositories\Interfaces\Website\WishListRepositoryInterface;
 use Illuminate\Http\Request;
 
 class WishListController extends Controller
