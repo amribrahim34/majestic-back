@@ -65,7 +65,7 @@ class AuthController extends Controller
         // Implement any post-registration logic here, such as login or token generation
         auth()->login($user);
         $user = Auth::user();
-        $token = $user->createToken('authToken')->plainTextToke;
+        $token = $user->createToken('authToken')->plainTextToken;
 
         // Return a successful response, e.g., user data or a redirect
         return response()->json([
