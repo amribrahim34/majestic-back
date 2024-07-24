@@ -6,6 +6,10 @@ use App\Models\Book;
 use App\Repositories\Interfaces\BookRepositoryInterface;
 use Illuminate\Http\UploadedFile;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use League\Csv\Reader;
 
 
 class BookRepository implements BookRepositoryInterface
@@ -49,5 +53,68 @@ class BookRepository implements BookRepositoryInterface
     {
         $book = $this->findById($id);
         $book->delete();
+    }
+
+    public function importImagesFromCsv($filePath)
+    {
+        if (!file_exists($filePath)) {
+            throw new \Exception("File not found: $filePath");
+        }
+
+        $csv = Reader::createFromPath($filePath, 'r');
+        $csv->setHeaderOffset(0);
+
+        $records = $csv->getRecords();
+        $updateData = $this->prepareUpdateData($records);
+
+        if (!empty($updateData)) {
+            $this->batchUpdateImages($updateData);
+        }
+    }
+
+    private function prepareUpdateData($records): array
+    {
+        $updateData = [];
+
+        foreach ($records as $record) {
+            $isbn = $record['isbn'] ?? null;
+            $image = $record['image'] ?? null;
+
+            if (!$isbn || !$image) {
+                Log::warning("Skipping row due to missing data", $record);
+                continue;
+            }
+
+            $updateData[] = [
+                'isbn' => $isbn,
+                'image' => $image,
+            ];
+        }
+
+        return $updateData;
+    }
+
+    private function batchUpdateImages(array $updateData)
+    {
+        $cases = [];
+        $isbns = [];
+        $images = [];
+
+        foreach ($updateData as $data) {
+            $cases[] = "WHEN isbn10 = ? OR isbn13 = ? THEN ?";
+            $isbns[] = $data['isbn'];
+            $isbns[] = $data['isbn'];
+            $images[] = $data['image'];
+        }
+
+        $casesString = implode(' ', $cases);
+        $params = array_merge($isbns, $images);
+
+        $affected = Book::whereRaw("isbn10 IN ('" . implode("','", $isbns) . "') OR isbn13 IN ('" . implode("','", $isbns) . "')")
+            ->update(['img' => DB::raw("CASE $casesString END")], $params);
+
+        Log::info("Updated $affected books with new image data");
+
+        return $affected;
     }
 }

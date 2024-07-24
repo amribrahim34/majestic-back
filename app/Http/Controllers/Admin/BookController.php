@@ -11,6 +11,7 @@ use App\Repositories\Interfaces\BookRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Imports\BooksImport;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BookController extends Controller
@@ -79,5 +80,32 @@ class BookController extends Controller
     public function downloadTemplate()
     {
         return response()->download(storage_path('app/templates/book_import_template.xlsx'));
+    }
+
+    public function importImages(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt',
+        ]);
+
+        $file = $request->file('csv_file');
+        $path = $file->storeAs('imports', 'books_images_' . time() . '.csv');
+
+        try {
+            $affected = $this->bookRepository->importImagesFromCsv(storage_path('app/' . $path));
+            Log::info("Book image import completed successfully. Updated $affected books.");
+            return response()->json([
+                'message' => "Import completed successfully. Updated $affected books.",
+                'affected' => $affected
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Book image import failed', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Import failed: ' . $e->getMessage()
+            ], 500);
+        } finally {
+            // Optionally remove the uploaded file
+            // \Storage::delete($path);
+        }
     }
 }

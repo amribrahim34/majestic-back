@@ -56,6 +56,7 @@ Route::prefix('admin')->group(function () {
         Route::delete('/books/{book}', [BookController::class, 'destroy']);
 
         Route::post('/books/import', [BookController::class, 'import']);
+        Route::post('/books/import-images', [BookController::class, 'importImages']);
         Route::get('/template/book', [BookController::class, 'downloadTemplate']);
     });
 
