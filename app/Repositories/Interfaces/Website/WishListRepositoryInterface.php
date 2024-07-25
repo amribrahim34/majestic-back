@@ -9,4 +9,5 @@ interface WishListRepositoryInterface
     public function removeItem($userId, $bookId);
     public function clearWishList($userId);
     public function isItemInWishList($userId, $bookId);
+    public function toggleItem($userId, $bookId);
 }

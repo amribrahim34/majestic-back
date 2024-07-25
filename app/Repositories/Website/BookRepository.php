@@ -31,7 +31,16 @@ class BookRepository implements BookRepositoryInterface
     public function searchBooks($query, array $filters = [])
     {
         return Book::where('title', 'like', "%{$query}%")
+            ->orWhere('isbn10', $query)
+            ->orWhere('isbn13', $query)
+            ->orWhere('publication_date', $query)
             ->orWhereHas('authors', function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('category', function ($q) use ($query) {
+                $q->where('category_name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('publisher', function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%");
             })
             ->with(['authors', 'category', 'publisher', 'language'])

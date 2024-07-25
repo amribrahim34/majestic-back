@@ -70,6 +70,7 @@ Route::prefix('cart')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/wishlist', [WishListController::class, 'index']);
     Route::post('/wishlist/add', [WishListController::class, 'addItem']);
+    Route::post('/wishlist/toggle', [WishListController::class, 'toggleItem']);
     Route::delete('/wishlist/remove', [WishListController::class, 'removeItem']);
     Route::post('/wishlist/clear', [WishListController::class, 'clear']);
     Route::get('/wishlist/check', [WishListController::class, 'checkItem']);

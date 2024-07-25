@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Spatie\Translatable\HasTranslations;
 
 class Book extends Model
@@ -54,6 +56,16 @@ class Book extends Model
             return asset('storage/book_covers/' . $this->img);
         }
         return asset('storage/book_covers/default.png');
+    }
+
+    public function getIsWishListedAttribute()
+    {
+        if (auth('sanctum')->check()) {
+            $user = auth('sanctum')->user();
+            Log::notice('this is the relation in the book model', [$user->wishlist()->exists(), $user->wishlist->items()->where('book_id', $this->id)->exists()]);
+            return $user->wishlist()->exists() && $user->wishlist->items()->where('book_id', $this->id)->exists();
+        }
+        return false;
     }
 
     public function authors()

@@ -5,6 +5,7 @@ namespace App\Repositories\Website;
 use App\Models\WishList;
 use App\Models\WishListItem;
 use App\Repositories\Interfaces\Website\WishListRepositoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class WishListRepository implements WishListRepositoryInterface
 {
@@ -15,7 +16,7 @@ class WishListRepository implements WishListRepositoryInterface
 
     public function addItem($userId, $bookId)
     {
-        $wishList = WishList::firstOrCreate(['user_id' => $userId]);
+        $wishList = WishList::firstOrCreate(['user_id' => $userId, 'wishlist_name' => 'default']);
 
         $wishListItem = WishListItem::where('wish_list_id', $wishList->id)
             ->where('book_id', $bookId)
@@ -26,6 +27,29 @@ class WishListRepository implements WishListRepositoryInterface
                 'wish_list_id' => $wishList->id,
                 'book_id' => $bookId
             ]);
+        }
+    }
+
+    public function toggleItem($userId, $bookId)
+    {
+        try {
+            $wishList = WishList::firstOrCreate(
+                ['user_id' => $userId],
+                ['wishlist_name' => 'default']
+            );
+
+            // $wishListItem = WishListItem::firstOrCreate(['wish_list_id' => $userId, 'book_id' => $bookId]);
+            // $wishListItem = $wishList->items()->where('book_id', $bookId)->first();
+            $wishListItem = $wishList->items()->where('book_id', $bookId)->first();
+            Log::notice('this is the wishlist item', [$wishListItem]);
+            if (!$wishListItem) {
+                $wishList->items()->create(['book_id' => $bookId]);
+            } else {
+                $wishListItem->delete();
+            }
+        } catch (\Exception $e) {
+            Log::error('Error toggling wishlist item: ' . $e->getMessage());
+            throw $e;
         }
     }
 

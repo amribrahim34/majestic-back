@@ -39,6 +39,16 @@ class WishListController extends Controller
         return response()->json(['message' => __('wishlist.item_added')], 201);
     }
 
+    public function toggleItem(Request $request)
+    {
+        $request->validate([
+            'book_id' => 'required|exists:books,id',
+        ]);
+        $userId = auth()->id();
+        $this->wishListRepository->toggleItem($userId, $request->book_id);
+        return response()->json(['message' => __('wishlist.item_toggled')], 201);
+    }
+
     public function removeItem(Request $request)
     {
         $request->validate([

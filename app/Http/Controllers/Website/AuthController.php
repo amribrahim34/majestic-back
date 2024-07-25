@@ -31,7 +31,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+            $user = auth('sanctum')->user();
             $token = $user->createToken('authToken')->plainTextToken;
 
             return response()->json([
@@ -64,7 +64,7 @@ class AuthController extends Controller
         $this->cartRepository->transferGuestCart(session()->getId(), $user->id);
         // Implement any post-registration logic here, such as login or token generation
         auth()->login($user);
-        $user = Auth::user();
+        $user = auth('sanctum')->user();
         $token = $user->createToken('authToken')->plainTextToken;
 
         // Return a successful response, e.g., user data or a redirect

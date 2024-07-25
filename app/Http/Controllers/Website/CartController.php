@@ -22,7 +22,7 @@ class CartController extends Controller
 
     private function getUserIdentifier()
     {
-        return Auth::check() ? Auth::id() : session()->getId();
+        return auth('sanctum')->check() ? auth('sanctum')->id() : session()->getId();
     }
 
     public function index(): JsonResponse
