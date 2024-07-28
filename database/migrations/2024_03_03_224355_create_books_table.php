@@ -27,7 +27,7 @@ return new class extends Migration
             $table->enum('format', ['PDF', 'Hard Copy', 'Audiobook'])->default('Hard Copy');
             $table->decimal('price', 10, 2);
             $table->integer('stock_quantity');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
 
             // Foreign keys constraints
             $table->foreign('author_id')->references('id')->on('authors')->onDelete('cascade');
