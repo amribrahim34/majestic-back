@@ -9,6 +9,7 @@ use App\Models\Publisher;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class BooksImport implements ToModel, WithHeadingRow
 {
@@ -76,14 +77,17 @@ class BooksImport implements ToModel, WithHeadingRow
         }
 
         try {
-            return Carbon::parse($date)->format('Y-m-d');
-        } catch (\Exception $e) {
+            // If it's just a year, create a date for January 1st of that year
             if (preg_match('/^\d{4}$/', $date)) {
                 return Carbon::createFromFormat('Y', $date)->startOfYear()->format('Y-m-d');
             }
+            // Otherwise, try to parse the date normally
+            return Carbon::parse($date)->format('Y-m-d');
+        } catch (\Exception $e) {
+            // If parsing fails, log the error and return null
+            Log::error("Failed to parse date: " . $date . ". Error: " . $e->getMessage());
+            return null;
         }
-
-        return null;
     }
 
     private function parseAuthors($authorString)

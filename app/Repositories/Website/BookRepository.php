@@ -5,7 +5,7 @@ namespace App\Repositories\Website;
 use App\Models\Book;
 use App\Repositories\Interfaces\Website\BookRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Support\Facades\Log;
 
 class BookRepository implements BookRepositoryInterface
 {
@@ -76,19 +76,19 @@ class BookRepository implements BookRepositoryInterface
         }
 
         if (isset($filters['price_min'])) {
-            $query->where('price', '>=', $filters['price_min']);
+            $query->where('price', '>=', floatval($filters['price_min']));
         }
 
         if (isset($filters['price_max'])) {
-            $query->where('price', '<=', $filters['price_max']);
+            $query->where('price', '<=', floatval($filters['price_max']));
         }
 
         if (isset($filters['year_min'])) {
-            $query->whereYear('publication_date', '>=', $filters['year_min']);
+            $query->whereYear('publication_date', '>=', intval($filters['year_min']));
         }
 
         if (isset($filters['year_max'])) {
-            $query->whereYear('publication_date', '<=', $filters['year_max']);
+            $query->whereYear('publication_date', '<=', intval($filters['year_max']));
         }
 
         if (isset($filters['search'])) {
@@ -103,9 +103,9 @@ class BookRepository implements BookRepositoryInterface
                     });
             });
         }
-
-        // Add other filters as needed
-
+        Log::debug("filters in repository", $filters);
+        Log::debug("Query SQL", [$query->toSql(), $query->getBindings()]);
+        Log::debug("Result count before pagination: " . $query->count());
         return $query;
     }
 
