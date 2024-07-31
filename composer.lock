@@ -4,8 +4,49 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be657b2dafa8939fa5c08589323332ea",
+    "content-hash": "d4b58a66abae153be357062aef893847",
     "packages": [
+        {
+            "name": "amribrahim34/bosta-laravel",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/amribrahim34/bosta-laravel.git",
+                "reference": "010c53966f88860eabf7f8992d123b182ba3e911"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/amribrahim34/bosta-laravel/zipball/010c53966f88860eabf7f8992d123b182ba3e911",
+                "reference": "010c53966f88860eabf7f8992d123b182ba3e911",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^8.0|^9.0|^10.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Amribrahim34\\BostaLaravel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Amr Ibrahim",
+                    "email": "amramr3434@gmail.com"
+                }
+            ],
+            "description": "this package is for integration with Egyptien curior bosta",
+            "support": {
+                "issues": "https://github.com/amribrahim34/bosta-laravel/issues",
+                "source": "https://github.com/amribrahim34/bosta-laravel/tree/main"
+            },
+            "time": "2024-07-30T19:52:17+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.11.0",
@@ -10282,7 +10323,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "amribrahim34/bosta-laravel": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -27,6 +27,14 @@ class SocialAuthRepository implements SocialAuthRepositoryInterface
         return User::create([
             'user_name' => $userData['name'],
             'email' => $userData['email'],
+            'address' => $userData['address'] ?? null,
+            'city' => $userData['city'] ?? null,
+            'state_province' => $userData['state_province'] ?? null,
+            'mobile' => $userData['mobile'] ?? null,
+            'gender' => $userData['gender'] ?? null,
+            'avatar' => $userData['avatar'] ?? null,
+            'birthday' => $userData['birthday'] ?? null,
+            'last_login' => $userData['last_login'] ?? null,
             'password' => Hash::make(Str::random(16)),
         ]);
     }

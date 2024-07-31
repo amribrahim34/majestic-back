@@ -44,6 +44,7 @@ class SocialAuthController extends Controller
                 $user = $this->socialAuthRepository->createUser([
                     'name' => $socialUser->getName(),
                     'email' => $socialUser->getEmail(),
+                    'avatar' => $socialUser->getAvatar(),
                 ]);
             }
         }

@@ -62,7 +62,7 @@ class Book extends Model
     {
         if (auth('sanctum')->check()) {
             $user = auth('sanctum')->user();
-            Log::notice('this is the relation in the book model', [$user->wishlist()->exists(), $user->wishlist->items()->where('book_id', $this->id)->exists()]);
+            Log::notice('this is the relation in the book model', [$user->wishlist()->exists(), $user->wishlist?->items()->where('book_id', $this->id)->exists()]);
             return $user->wishlist()->exists() && $user->wishlist->items()->where('book_id', $this->id)->exists();
         }
         return false;

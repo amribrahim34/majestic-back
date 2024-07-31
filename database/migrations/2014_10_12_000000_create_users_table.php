@@ -21,8 +21,13 @@ return new class extends Migration
             $table->string('address', 255)->nullable();
             $table->string('city', 100)->nullable();
             $table->string('state_province', 100)->nullable();
-            $table->string('country', 100)->nullable();
+            $table->string('country', 100)->default('egypt');
             $table->string('mobile', 20)->nullable();
+
+            $table->string('gender', 100)->nullable();
+            $table->string('avatar', 255)->nullable();
+            $table->date('birthday')->nullable();
+
             $table->dateTime('last_login')->nullable();
             $table->rememberToken();
             $table->timestamps();
