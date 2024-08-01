@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('isbn10', 10)->nullable();
             $table->string('isbn13', 13)->nullable();
             $table->integer('num_pages')->nullable();
-            $table->string('dimensions', 50)->nullable();
+            $table->string('dimensions', 500)->nullable();
             $table->decimal('weight', 5, 2)->nullable();
             $table->enum('format', ['PDF', 'Hard Copy', 'Audiobook'])->default('Hard Copy');
             $table->decimal('price', 10, 2);
