@@ -28,6 +28,7 @@ class StoreBlogPostRequest extends FormRequest
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'keywords' => 'nullable|string',
+            'img' => 'nullable|file',
         ];
     }
 }

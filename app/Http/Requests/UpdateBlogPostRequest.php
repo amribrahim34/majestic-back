@@ -11,7 +11,7 @@ class UpdateBlogPostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class UpdateBlogPostRequest extends FormRequest
     {
         return [
             'title' => 'string|max:255',
-            'slug' => 'string|max:255|unique:posts,slug,' . $this->post,
+            'slug' => 'string|max:255|unique:blog_posts,slug,' . $this->post,
             'content' => 'string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',

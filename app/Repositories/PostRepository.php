@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\BlogPost;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class PostRepository implements PostRepositoryInterface
 {
@@ -25,6 +26,7 @@ class PostRepository implements PostRepositoryInterface
             $path = $data['img']->store('post_images', 'public');
             $data['img'] = $path;
         }
+        Log::notice('Uploaded file', ['data' => $data]);
         return BlogPost::create($data);
     }
 
