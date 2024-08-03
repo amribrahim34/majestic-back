@@ -23,10 +23,6 @@ class User extends Authenticatable
         'user_name',
         'email',
         'password',
-        'address',
-        'city',
-        'state_province',
-        'country',
         'mobile',
         'gender',
         'avatar',
@@ -67,5 +63,15 @@ class User extends Authenticatable
     public function wishlist(): HasOne
     {
         return $this->hasOne(WishList::class);
+    }
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function defaultAddress()
+    {
+        return $this->addresses(Address::class)->where('is_default', true);
     }
 }

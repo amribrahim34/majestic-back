@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "^3.1",
         "opcodesio/log-viewer": "^3.10",
+        "rinvex/countries": "^9.0",
         "sentry/sentry-laravel": "^4.7",
         "spatie/laravel-translatable": "^6.6"
     },

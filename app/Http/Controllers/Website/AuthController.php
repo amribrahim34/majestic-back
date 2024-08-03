@@ -89,9 +89,6 @@ class AuthController extends Controller
         return User::create([
             'user_name' => $data['user_name'],
             'email' => $data['email'],
-            'address' => $data['address'] ?? null,
-            'city' => $data['city'] ?? null,
-            'state_province' => $data['state_province'] ?? null,
             'mobile' => $data['mobile'] ?? null,
             'gender' => $data['gender'] ?? null,
             'avatar' => $data['avatar'] ?? null,
