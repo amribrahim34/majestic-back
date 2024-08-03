@@ -11,7 +11,7 @@ class StoreBlogPostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class StoreBlogPostRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:posts,slug,' . $this->post,
+            'slug' => 'required|string|max:255|unique:blog_posts,slug,' . $this->post,
             'content' => 'required',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
