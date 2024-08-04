@@ -37,7 +37,7 @@ class BookResource extends JsonResource
             'is_wishlisted' => $this->is_wishlisted,
 
             'order_count' => $this->order_count,
-            'average_rating' => $this->average_rating ?? 0,
+            'average_rating' => intval($this->average_rating)  ?? 0,
 
             'img' => $this->img,
             'created_at' => $this->created_at->toIso8601String(),
