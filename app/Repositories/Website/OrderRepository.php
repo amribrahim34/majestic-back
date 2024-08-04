@@ -25,7 +25,9 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function makeOrder(): array
     {
-        return DB::transaction(function () {
+        $user = auth('sanctum')->user();
+        $address = $user->defaultAddress;
+        return DB::transaction(function () use ($address) {
             $cart = $this->getUserCart();
 
             $this->validateCart($cart);
@@ -33,10 +35,9 @@ class OrderRepository implements OrderRepositoryInterface
             $totalAmount = $this->calculateTotalAmount($cart);
 
             // Calculate shipment cost based on division
-            $shipmentCost = $this->calculateShipmentCost();
+            $shipmentCost = $this->calculateShipmentCost($totalAmount, $address->city);
 
             // Add shipment cost to the total amount
-            $totalAmount += $shipmentCost;
 
             $order = $this->createOrder($totalAmount);
 

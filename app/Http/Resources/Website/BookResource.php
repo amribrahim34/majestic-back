@@ -14,6 +14,8 @@ class BookResource extends JsonResource
             'title' => $this->title,
             'price' => $this->price,
             'image' => $this->image,
+            'order_count' => $this->order_count,
+            'average_rating' => $this->average_rating,
             // Add other book fields as needed
         ];
     }

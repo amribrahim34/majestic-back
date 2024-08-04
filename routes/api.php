@@ -10,6 +10,7 @@ use App\Http\Controllers\Website\CartController;
 use App\Http\Controllers\Website\CategoryController;
 use App\Http\Controllers\Website\FormatController;
 use App\Http\Controllers\Website\PublisherController;
+use App\Http\Controllers\Website\RatingController;
 use App\Http\Controllers\Website\WishListController;
 use App\Http\Controllers\Website\SocialAuthController;
 
@@ -80,4 +81,13 @@ Route::prefix('blog')->group(function () {
     Route::get('/recent', [BlogPostController::class, 'recent']);
     Route::get('/tag/{tagSlug}', [BlogPostController::class, 'byTag']);
     Route::get('/{slug}', [BlogPostController::class, 'show']);
+});
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/books/{bookId}/rate', [RatingController::class, 'rateBook']);
+    Route::get('/books/{bookId}/rating', [RatingController::class, 'getUserRating']);
+    Route::put('/books/{bookId}/rating', [RatingController::class, 'updateRating']);
+    Route::delete('/books/{bookId}/rating', [RatingController::class, 'deleteRating']);
 });

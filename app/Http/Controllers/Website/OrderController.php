@@ -22,23 +22,18 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        // $orders = $this->orderRepository->getAllOrders();
+        // return response()->json(["data"=>$orders]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        $order = $this->orderRepository->makeOrder();
+        return response()->json(__('orders.created'), $order);
     }
 
     /**

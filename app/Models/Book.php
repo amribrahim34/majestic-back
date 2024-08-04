@@ -13,6 +13,8 @@ class Book extends Model
 {
     use HasFactory;
 
+    protected $appends = ['order_count', 'average_rating'];
+
     protected $fillable = [
         'title',
         'category_id',
@@ -30,6 +32,7 @@ class Book extends Model
         'description',
         'img',
     ];
+
 
     // Specify which attributes are translatable.
     // public $translatable = ['title', 'description'];
@@ -73,8 +76,32 @@ class Book extends Model
         return $this->belongsToMany(Author::class);
     }
 
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class);
+    }
+
+
+    public function getOrderCountAttribute()
+    {
+        return $this->orderItems()->sum('quantity');
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        $average = $this->ratings()->avg('rating');
+        return number_format($average, 1);
     }
 }
