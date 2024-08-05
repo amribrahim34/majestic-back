@@ -8,43 +8,33 @@ use App\Models\Cart;
 use App\Repositories\Interfaces\Website\OrderRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use amribrahim34\BostaEgypt\Endpoints\Pricing;
-
+use amribrahim34\BostaEgypt\BostaApi;
+use Illuminate\Support\Facades\Log;
 
 class OrderRepository implements OrderRepositoryInterface
 {
     private $userId;
-    private $pricing;
+    private $bostaApi;
 
 
-    public function __construct(Pricing $pricing)
+    public function __construct(BostaApi $bostaApi)
     {
         $this->userId = auth('sanctum')->id();
-        $this->pricing = $pricing;
+        $this->bostaApi = $bostaApi;
     }
 
     public function makeOrder(): array
     {
-        $user = auth('sanctum')->user();
-        $address = $user->defaultAddress;
-        return DB::transaction(function () use ($address) {
+        return DB::transaction(function () {
             $cart = $this->getUserCart();
-
+            $city_name = request()->city;
             $this->validateCart($cart);
-
             $totalAmount = $this->calculateTotalAmount($cart);
-
-            // Calculate shipment cost based on division
-            $shipmentCost = $this->calculateShipmentCost($totalAmount, $address->city);
-
-            // Add shipment cost to the total amount
-
-            $order = $this->createOrder($totalAmount);
-
+            $shipmentCost = $this->calculateShipmentCost($totalAmount, $city_name);
+            $totalAmount += $shipmentCost;
+            $order = $this->createOrder($totalAmount, $shipmentCost);
             $this->createOrderItems($order, $cart);
-
             $this->clearCart();
-
             return $order->load('items')->toArray();
         });
     }
@@ -59,12 +49,16 @@ class OrderRepository implements OrderRepositoryInterface
             'type' => 'SEND'
         ];
 
-        $response = $this->pricing->calculateShipment($params);
+        $response = $this->bostaApi->pricing->calculateShipment($params);
 
-        if ($response['status'] === 'success') {
-            return $response['data']['cost'];
+        // Log the response for debugging
+        // Log::info('Bosta API Response:', ['response' => $response['data']]);
+
+        // $decodedResponse = json_decode($response, true);
+
+        if (is_array($response) && $response['success'] && isset($response['data']['priceAfterVat'])) {
+            return $response['data']['priceAfterVat'];
         }
-
         throw new \Exception('Failed to calculate shipment cost.');
     }
 
@@ -88,12 +82,20 @@ class OrderRepository implements OrderRepositoryInterface
         });
     }
 
-    private function createOrder(float $totalAmount): Order
+    private function createOrder(float $totalAmount, $shipping): Order
     {
+        $user = auth('sanctum')->user();
+        $address = $user->addresses->first();
+        Log::alert([$address->address]);
         return Order::create([
             'user_id' => $this->userId,
             'total_amount' => $totalAmount,
             'status' => 'pending',
+            'shipping_address' => $address->address,
+            'shipping_cost' => $shipping,
+            'city' => $address->city,
+            "country" => "Egypt",
+            'order_date' => now(),
         ]);
     }
 
@@ -114,10 +116,10 @@ class OrderRepository implements OrderRepositoryInterface
         }
     }
 
-    public function getAllOrders(int $userId): array
+    public function getAllOrders(): array
     {
         return Order::with('items')
-            ->where('user_id', $userId)
+            ->where('user_id', $this->userId)
             ->get()
             ->toArray();
     }

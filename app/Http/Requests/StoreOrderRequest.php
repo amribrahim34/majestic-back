@@ -24,7 +24,10 @@ class StoreOrderRequest extends FormRequest
         return [
             "city" => "string|required",
             "address" => "string|required",
-
+            "latitude" => "nullable|numeric",
+            "longitude" => "nullable|numeric",
+            "special_mark" => "string",
+            "phone" => "numeric",
         ];
     }
 }

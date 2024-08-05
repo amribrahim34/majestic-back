@@ -17,7 +17,6 @@ class Address extends Model
         'address',
         'special_mark',
         'city',
-        'state',
         'latitude',
         'longitude',
         'is_default',

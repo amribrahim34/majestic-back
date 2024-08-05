@@ -9,6 +9,7 @@ use App\Http\Controllers\Website\BookController;
 use App\Http\Controllers\Website\CartController;
 use App\Http\Controllers\Website\CategoryController;
 use App\Http\Controllers\Website\FormatController;
+use App\Http\Controllers\Website\OrderController;
 use App\Http\Controllers\Website\PublisherController;
 use App\Http\Controllers\Website\RatingController;
 use App\Http\Controllers\Website\WishListController;
@@ -83,6 +84,16 @@ Route::prefix('blog')->group(function () {
     Route::get('/{slug}', [BlogPostController::class, 'show']);
 });
 
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders/{orderId}', [OrderController::class, 'show']);
+    Route::put('/orders/{order}', [OrderController::class, 'update']);
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy']);
+    Route::get('/orders/{orderId}/trace', [OrderController::class, 'trace']);
+    Route::post('/orders/{orderId}/refund', [OrderController::class, 'refund']);
+});
 
 
 Route::middleware('auth:sanctum')->group(function () {

@@ -22,8 +22,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        // $orders = $this->orderRepository->getAllOrders();
-        // return response()->json(["data"=>$orders]);
+        $orders = $this->orderRepository->getAllOrders();
+        return response()->json(["data" => $orders]);
     }
 
 
@@ -32,24 +32,25 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        $order = $this->orderRepository->makeOrder();
-        return response()->json(__('orders.created'), $order);
+        try {
+            $this->createOrUpdateAddress();
+            $order = $this->orderRepository->makeOrder();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        return response()->json([
+            __('orders.created'),
+            $order
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
+    public function show(int $orderId)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
+        $order = $this->orderRepository->getOrder($orderId);
+        if (!$order) {
+            return response()->json(['message' => __('orders.not_found')], 404);
+        }
+        return response()->json(['data' => $order]);
     }
 
     /**
@@ -57,7 +58,13 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        // Assuming you want to update the order status or other details
+        // You might need to add a method to the repository for this
+        // $updatedOrder = $this->orderRepository->updateOrder($order->id, $request->validated());
+        // return response()->json(['message' => __('orders.updated'), 'data' => $updatedOrder]);
+
+        // For now, we'll just return a placeholder response
+        return response()->json(['message' => __('orders.updated')]);
     }
 
     /**
@@ -65,6 +72,53 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $cancelled = $this->orderRepository->cancelOrder($order->id);
+        if ($cancelled) {
+            return response()->json(['message' => __('orders.cancelled')], 200);
+        }
+        return response()->json(['message' => __('orders.cancel_failed')], 400);
+    }
+
+    /**
+     * Trace the specified order.
+     */
+    public function trace(int $orderId)
+    {
+        $traceInfo = $this->orderRepository->traceOrder($orderId);
+        return response()->json(['data' => $traceInfo]);
+    }
+
+    /**
+     * Refund the specified order.
+     */
+    public function refund(int $orderId)
+    {
+        $refunded = $this->orderRepository->refundOrder($orderId);
+        if ($refunded) {
+            return response()->json(['message' => __('orders.refunded')], 200);
+        }
+        return response()->json(['message' => __('orders.refund_failed')], 400);
+    }
+
+
+    private function createOrUpdateAddress()
+    {
+        $user = auth('sanctum')->user();
+
+        $addressData = request()->only([
+            'city',
+            'address',
+            'latitude',
+            'longitude',
+            'special_mark',
+            'phone'
+        ]);
+
+        $address = $user->addresses()->updateOrCreate(
+            ['is_default' => true],
+            array_merge($addressData, ['is_default' => true])
+        );
+
+        return $address;
     }
 }
