@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Http\Resources\Website\Order\OrderResource;
 use App\Models\Order;
 use App\Repositories\Interfaces\Website\OrderRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 
 class OrderController extends Controller
 {
@@ -20,57 +22,53 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $orders = $this->orderRepository->getAllOrders();
-        return response()->json(["data" => $orders]);
+        return response()->json(["data" => OrderResource::collection($orders)]);
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreOrderRequest $request)
+    public function store(StoreOrderRequest $request): JsonResponse
     {
         try {
-            $this->createOrUpdateAddress();
-            $order = $this->orderRepository->makeOrder();
+            $address = $this->createOrUpdateAddress();
+            $order = $this->orderRepository->makeOrder($address);
+            return response()->json([
+                'message' => __('orders.created'),
+                'data' => new OrderResource($order)
+            ], 201);
         } catch (\Throwable $th) {
-            throw $th;
+            return response()->json(['message' => __('orders.create_failed')], 500);
         }
-        return response()->json([
-            __('orders.created'),
-            $order
-        ]);
     }
 
-    public function show(int $orderId)
+
+    public function show(int $orderId): JsonResponse
     {
         $order = $this->orderRepository->getOrder($orderId);
         if (!$order) {
             return response()->json(['message' => __('orders.not_found')], 404);
         }
-        return response()->json(['data' => $order]);
+        return response()->json(['data' => new OrderResource($order)]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateOrderRequest $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order): JsonResponse
     {
-        // Assuming you want to update the order status or other details
-        // You might need to add a method to the repository for this
         // $updatedOrder = $this->orderRepository->updateOrder($order->id, $request->validated());
-        // return response()->json(['message' => __('orders.updated'), 'data' => $updatedOrder]);
-
-        // For now, we'll just return a placeholder response
-        return response()->json(['message' => __('orders.updated')]);
+        return response()->json([
+            'message' => __('orders.updated'),
+            // 'data' => new OrderResource($updatedOrder)
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order $order)
+    public function destroy(Order $order): JsonResponse
     {
         $cancelled = $this->orderRepository->cancelOrder($order->id);
         if ($cancelled) {
@@ -82,16 +80,17 @@ class OrderController extends Controller
     /**
      * Trace the specified order.
      */
-    public function trace(int $orderId)
+    public function trace(int $orderId): JsonResponse
     {
         $traceInfo = $this->orderRepository->traceOrder($orderId);
         return response()->json(['data' => $traceInfo]);
     }
 
+
     /**
      * Refund the specified order.
      */
-    public function refund(int $orderId)
+    public function refund(int $orderId): JsonResponse
     {
         $refunded = $this->orderRepository->refundOrder($orderId);
         if ($refunded) {

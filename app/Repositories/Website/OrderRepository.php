@@ -116,17 +116,16 @@ class OrderRepository implements OrderRepositoryInterface
         }
     }
 
-    public function getAllOrders(): array
+    public function getAllOrders()
     {
         return Order::with('items')
             ->where('user_id', $this->userId)
-            ->get()
-            ->toArray();
+            ->paginate();
     }
 
     public function getOrder(int $orderId): ?array
     {
-        $order = Order::with('items')->find($orderId);
+        $order = Order::with('items.book')->find($orderId);
         return $order ? $order->toArray() : null;
     }
 
