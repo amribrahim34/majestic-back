@@ -9,6 +9,7 @@ use App\Http\Resources\Website\Order\OrderResource;
 use App\Models\Order;
 use App\Repositories\Interfaces\Website\OrderRepositoryInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -46,6 +47,7 @@ class OrderController extends Controller
 
     public function show(int $orderId): JsonResponse
     {
+        Log::alert($orderId);
         $order = $this->orderRepository->getOrder($orderId);
         if (!$order) {
             return response()->json(['message' => __('orders.not_found')], 404);

@@ -35,7 +35,7 @@ class OrderRepository implements OrderRepositoryInterface
             $order = $this->createOrder($totalAmount, $shipmentCost);
             $this->createOrderItems($order, $cart);
             $this->clearCart();
-            return $order->load('items')->toArray();
+            return $order->load('items');
         });
     }
 
@@ -123,15 +123,16 @@ class OrderRepository implements OrderRepositoryInterface
             ->paginate();
     }
 
-    public function getOrder(int $orderId): ?array
+    public function getOrder(int $orderId)
     {
         $order = Order::with('items.book')->find($orderId);
-        return $order ? $order->toArray() : null;
+        Log::alert("this is the order", [$order]);
+        return $order ? $order : null;
     }
 
-    public function traceOrder(int $orderId): array
+    public function traceOrder(int $orderId)
     {
-        return Order::findOrFail($orderId)->toArray();
+        return Order::findOrFail($orderId);
     }
 
     public function refundOrder(int $orderId): bool
