@@ -50,5 +50,8 @@ return [
         'api_key' => env('BOSTA_API_KEY'),
         'base_url' => env('BOSTA_BASE_URL', 'https://api.bosta.co'),
     ],
+    'slack' => [
+        'webhook_url' => env('SLACK_WEBHOOK_URL'),
+    ],
 
 ];

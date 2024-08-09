@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\PublisherController;
+use App\Http\Controllers\Admin\OrderController;
 
 Route::prefix('admin')->group(function () {
 
@@ -69,5 +70,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/verify-token', function () {
             return response()->json(['message' => 'Token is valid']);
         });
+    });
+
+    Route::middleware('admin')->prefix('orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::post('/', [OrderController::class, 'store']);
+        Route::get('/{id}', [OrderController::class, 'show']);
+        Route::put('/{id}/status', [OrderController::class, 'updateStatus']);
+        Route::get('/revenue', [OrderController::class, 'revenue']);
+        Route::get('/top-customers', [OrderController::class, 'topCustomers']);
     });
 });
