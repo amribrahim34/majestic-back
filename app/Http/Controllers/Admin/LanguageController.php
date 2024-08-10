@@ -7,7 +7,7 @@ use App\Http\Requests\StoreLanguageRequest;
 use App\Http\Requests\UpdateLanguageRequest;
 use App\Http\Resources\LanguageResource;
 use App\Models\Language;
-use App\Repositories\Interfaces\LanguageRepositoryInterface;
+use App\Repositories\Interfaces\Admin\LanguageRepositoryInterface;
 
 class LanguageController extends Controller
 {

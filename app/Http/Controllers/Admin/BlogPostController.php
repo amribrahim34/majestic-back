@@ -7,7 +7,7 @@ use App\Http\Requests\StoreBlogPostRequest;
 use App\Http\Requests\UpdateBlogPostRequest;
 use App\Http\Resources\Admin\PostResource;
 use App\Models\BlogPost;
-use App\Repositories\Interfaces\PostRepositoryInterface;
+use App\Repositories\Interfaces\Admin\PostRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

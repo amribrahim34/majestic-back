@@ -7,7 +7,7 @@ use App\Http\Requests\StorePublisherRequest;
 use App\Http\Requests\UpdatePublisherRequest;
 use App\Http\Resources\Admin\PublisherResource;
 use App\Models\Publisher;
-use App\Repositories\Interfaces\PublisherRepositoryInterface;
+use App\Repositories\Interfaces\Admin\PublisherRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

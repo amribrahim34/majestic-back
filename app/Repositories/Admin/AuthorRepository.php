@@ -2,10 +2,10 @@
 
 // app/Repositories/AuthorRepository.php
 
-namespace App\Repositories;
+namespace App\Repositories\Admin;
 
 use App\Models\Author;
-use App\Repositories\Interfaces\AuthorRepositoryInterface;
+use App\Repositories\Interfaces\Admin\AuthorRepositoryInterface;
 
 class AuthorRepository implements AuthorRepositoryInterface
 {

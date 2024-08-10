@@ -8,7 +8,7 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Repositories\Interfaces\Admin\CategoryRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

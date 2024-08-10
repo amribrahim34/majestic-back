@@ -1,10 +1,10 @@
 <?php
 // app/Repositories/CategoryRepository.php
 
-namespace App\Repositories;
+namespace App\Repositories\Admin;
 
 use App\Models\Category;
-use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Repositories\Interfaces\Admin\CategoryRepositoryInterface;
 use Illuminate\Support\Facades\App;
 
 class CategoryRepository implements CategoryRepositoryInterface

@@ -9,7 +9,7 @@ use App\Http\Resources\Admin\OrderCollection;
 use App\Http\Resources\Admin\OrderResource;
 use App\Mail\NewOrderMail;
 use App\Notifications\NewOrderNotification;
-use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Repositories\Interfaces\Admin\OrderRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;

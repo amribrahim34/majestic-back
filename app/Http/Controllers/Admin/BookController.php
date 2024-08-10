@@ -7,7 +7,7 @@ use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Http\Resources\Admin\BookResource;
 use App\Models\Book;
-use App\Repositories\Interfaces\BookRepositoryInterface;
+use App\Repositories\Interfaces\Admin\BookRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Imports\BooksImport;

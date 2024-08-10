@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Admin;
 
 use App\Models\BlogPost;
-use App\Repositories\Interfaces\PostRepositoryInterface;
+use App\Repositories\Interfaces\Admin\PostRepositoryInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Admin;
 
 use App\Models\Book;
-use App\Repositories\Interfaces\BookRepositoryInterface;
+use App\Repositories\Interfaces\Admin\BookRepositoryInterface;
 use Illuminate\Http\UploadedFile;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;

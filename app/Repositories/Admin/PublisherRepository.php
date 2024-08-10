@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Admin;
 
 use App\Models\Publisher;
-use App\Repositories\Interfaces\PublisherRepositoryInterface;
+use App\Repositories\Interfaces\Admin\PublisherRepositoryInterface;
 
 class PublisherRepository implements PublisherRepositoryInterface
 {

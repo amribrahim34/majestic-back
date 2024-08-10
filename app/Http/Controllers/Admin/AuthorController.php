@@ -7,7 +7,7 @@ use App\Http\Requests\StoreAuthorRequest;
 use App\Http\Requests\UpdateAuthorRequest;
 use App\Http\Resources\Admin\AuthorResource;
 use App\Models\Author;
-use App\Repositories\Interfaces\AuthorRepositoryInterface;
+use App\Repositories\Interfaces\Admin\AuthorRepositoryInterface;
 use Illuminate\Http\Response;
 
 class AuthorController extends Controller

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Repositories\Interfaces;
+namespace App\Repositories\Interfaces\Admin;
 
-interface PublisherRepositoryInterface
+interface AuthorRepositoryInterface
 {
     public function all();
+    public function findById($id);
     public function create(array $data);
     public function update($id, array $data);
     public function delete($id);
-    public function findById($id);
 }
