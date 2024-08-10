@@ -56,9 +56,9 @@ class Book extends Model
     public function getImageAttribute()
     {
         if ($this->img) {
-            return asset('storage/book_covers/' . $this->img);
+            return secure_asset('storage/book_covers/' . $this->img);
         }
-        return asset('storage/book_covers/default.png');
+        return secure_asset('storage/book_covers/default.png');
     }
 
     public function getIsWishListedAttribute()
