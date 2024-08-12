@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 
 class Book extends Model
 {
@@ -103,5 +104,16 @@ class Book extends Model
     {
         $average = $this->ratings()->avg('rating');
         return number_format($average, 1);
+    }
+
+    public function scopeSearch(Builder $query, $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%")
+                ->orWhereHas('authors', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+        });
     }
 }
