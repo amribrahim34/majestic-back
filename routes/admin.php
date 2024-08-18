@@ -15,6 +15,9 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
 
     Route::middleware(['admin'])->group(function () {
+
+        Route::post('/categories/import', [CategoryController::class, 'import']);
+        Route::get('/categories/export', [CategoryController::class, 'export']);
         Route::get('/categories', [CategoryController::class, 'index']);
         Route::post('/categories', [CategoryController::class, 'store']);
         Route::get('/categories/{category}', [CategoryController::class, 'show']);
@@ -33,6 +36,8 @@ Route::prefix('admin')->group(function () {
     });
 
     Route::middleware('admin')->group(function () {
+        Route::post('/authors/import', [AuthorController::class, 'import']);
+        Route::get('/authors/export', [AuthorController::class, 'export']);
         Route::get('/authors', [AuthorController::class, 'index'])->name('admin.authors.index');
         Route::post('/authors', [AuthorController::class, 'store'])->name('admin.authors.store');
         Route::get('/authors/{author}', [AuthorController::class, 'show'])->name('admin.authors.show');
@@ -51,6 +56,9 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('admin')->group(function () {
         Route::get('/books', [BookController::class, 'index']);
+        Route::post('/books/import-update', [BookController::class, 'importUpdate']);
+        Route::get('/books/export', [BookController::class, 'export']);
+
         Route::post('/books', [BookController::class, 'store']);
         Route::get('/books/{book}', [BookController::class, 'show']);
         Route::put('/books/{book}', [BookController::class, 'update']);

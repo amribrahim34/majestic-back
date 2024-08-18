@@ -65,6 +65,26 @@ class BookRepository implements BookRepositoryInterface
             ->get();
     }
 
+    public function getBookRating($id)
+    {
+        $book = Book::findOrFail($id);
+        return [
+            'average_rating' => $book->average_rating,
+            'ratings_count' => $book->ratings()->count(),
+        ];
+    }
+
+    public function getRelatedProducts($id, $limit = 5)
+    {
+        $book = Book::findOrFail($id);
+
+        return Book::where('category_id', $book->category_id)
+            ->where('id', '!=', $id)
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
+
     private function applyFilters(Builder $query, array $filters): Builder
     {
         if (isset($filters['category_ids'])) {

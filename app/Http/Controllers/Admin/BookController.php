@@ -6,13 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Http\Resources\Admin\BookResource;
-use App\Models\Book;
 use App\Repositories\Interfaces\Admin\BookRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Imports\BooksImport;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+
+
+use App\Exports\BookExport;
+use App\Imports\BookUpdate;;
+
+use App\Jobs\ProcessImport;
 
 class BookController extends Controller
 {
@@ -107,5 +114,23 @@ class BookController extends Controller
             // Optionally remove the uploaded file
             // \Storage::delete($path);
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new BookExport, 'books.xlsx');
+    }
+
+    public function importUpdate(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        $path = $request->file('file')->store('imports');
+        $job = new ProcessImport(BookUpdate::class, $path);
+        $this->dispatch($job);
+
+        return response()->json(['message' => 'Import job queued successfully', 'job_id' => $job->getJobId()]);
     }
 }

@@ -13,4 +13,6 @@ interface BookRepositoryInterface
     public function getPriceRange();
     public function getYearRange();
     public function getDistinctFormats();
+    public function getBookRating($id);
+    public function getRelatedProducts($id, $limit = 5);
 }
