@@ -11,7 +11,8 @@ class AuthorRepository implements AuthorRepositoryInterface
 {
     public function all()
     {
-        return Author::all();
+        $limit = request()->limit;
+        return Author::paginate($limit);
     }
 
     public function findById($id)

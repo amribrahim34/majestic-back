@@ -27,7 +27,14 @@ class BookController extends Controller
     public function show($id)
     {
         $book = $this->bookRepository->getBookById($id);
-        return new BookResource($book);
+        $rating = $this->bookRepository->getBookRating($id);
+        $relatedProducts = $this->bookRepository->getRelatedProducts($id);
+
+        return (new BookResource($book))
+            ->additional([
+                'rating' => $rating,
+                'related_products' => BookResource::collection($relatedProducts),
+            ]);
     }
 
     public function byCategory($categoryId)

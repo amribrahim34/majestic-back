@@ -43,6 +43,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/authors/{author}', [AuthorController::class, 'show'])->name('admin.authors.show');
         Route::put('/authors/{author}', [AuthorController::class, 'update'])->name('admin.authors.update');
         Route::delete('/authors/{author}', [AuthorController::class, 'destroy'])->name('admin.authors.destroy');
+
+        Route::post('/authors/update-from-csv', [AuthorController::class, 'updateFromCSV']);
+        Route::get('/authors/update-progress/{jobId}', [AuthorController::class, 'updateProgress']);
     });
 
     Route::middleware('admin')->group(function () {
