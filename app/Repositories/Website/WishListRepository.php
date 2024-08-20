@@ -11,9 +11,12 @@ class WishListRepository implements WishListRepositoryInterface
 {
     public function getWishList($userId)
     {
-        return WishList::with(['items.book'])->where('user_id', $userId)->first();
+        return WishList::with(['items.book'])
+            ->firstOrCreate(
+                ['user_id' => $userId],
+                ['created_at' => now(), 'updated_at' => now(), 'wishlist_name' => 'default']
+            );
     }
-
     public function addItem($userId, $bookId)
     {
         $wishList = WishList::firstOrCreate(['user_id' => $userId, 'wishlist_name' => 'default']);

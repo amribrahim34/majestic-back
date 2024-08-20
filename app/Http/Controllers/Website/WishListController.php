@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateWishListRequest;
 use App\Http\Resources\Website\WishListResource;
 use App\Models\WishList;
 use App\Repositories\Interfaces\Website\WishListRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class WishListController extends Controller
@@ -20,11 +21,17 @@ class WishListController extends Controller
     }
 
 
-    public function index()
+    public function index(): JsonResponse
     {
         $userId = auth()->id();
+
+        if (!$userId) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
         $wishList = $this->wishListRepository->getWishList($userId);
-        return new WishListResource($wishList);
+
+        return new JsonResponse(new WishListResource($wishList));
     }
 
     public function addItem(Request $request)
