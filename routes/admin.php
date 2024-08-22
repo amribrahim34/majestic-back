@@ -24,6 +24,8 @@ Route::prefix('admin')->group(function () {
         Route::put('/categories/{category}', [CategoryController::class, 'update']);
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
         Route::post('/categories/bulk-delete', [CategoryController::class, 'bulkDelete']);
+
+        Route::post('/categories/update-from-excel', [CategoryController::class, 'updateFromExcel']);
     });
 
     Route::middleware(['admin'])->group(function () {

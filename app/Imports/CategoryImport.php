@@ -27,26 +27,10 @@ class CategoryImport implements ToModel, WithHeadingRow, WithValidation, WithBat
      */
     public function model(array $row)
     {
-        if (!empty($row['parent_name'])) {
-            $parent = $this->parentCategories->firstWhere('category_name', $row['parent_name']);
-
-            if (!$parent) {
-                $parent = Category::firstOrCreate(
-                    ['category_name' => $row['parent_name']],
-                    ['description' => null]
-                );
-                $this->parentCategories->push($parent);
-            }
-
-            $parentId = $parent->id;
-        } else {
-            $parentId = null;
-        }
-
-        return Category::updateOrCreate(
+        Category::firstOrCreate(
             ['category_name' => $row['category_name']],
             [
-                'parent_id' => $parentId,
+                'parent_id' => $row['parent_id'] ?? null,
                 'description' => $row['description'] ?? null,
             ]
         );
@@ -69,7 +53,7 @@ class CategoryImport implements ToModel, WithHeadingRow, WithValidation, WithBat
      */
     public function batchSize(): int
     {
-        return 1000;
+        return 100;
     }
 
     /**

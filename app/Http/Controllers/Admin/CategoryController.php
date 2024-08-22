@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Exports\CategoryExport;
 use App\Imports\CategoryImport;
-
+use App\Imports\CategoryUpdate;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -86,5 +87,45 @@ class CategoryController extends Controller
         $v = $request->validated();
         $this->categoryRepository->bulkDelete($v);
         return response()->json(['message' => __('categories.deleted')], Response::HTTP_NO_CONTENT);
+    }
+
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:10240', // Max 10MB file
+        ]);
+
+        $file = $request->file('file');
+
+        try {
+            Excel::import(new CategoryImport, $file);
+
+            return response()->json([
+                'message' => 'Categories imported successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error importing categories',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateFromExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv,txt',
+        ]);
+
+        $file = $request->file('file');
+
+        try {
+            Excel::import(new CategoryUpdate, $file);
+
+            return response()->json(['message' => 'Category update process started successfully'], 202);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error processing file: ' . $e->getMessage()], 500);
+        }
     }
 }
