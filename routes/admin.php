@@ -6,9 +6,13 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\CustomerInsightsController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\OrderStatusController;
+use App\Http\Controllers\Admin\ProductPerformanceController;
+use App\Http\Controllers\Admin\SalesOverviewController;
 
 Route::prefix('admin')->group(function () {
 
@@ -36,6 +40,15 @@ Route::prefix('admin')->group(function () {
         Route::delete('/posts/{post}', [BlogPostController::class, 'destroy']);
         Route::post('/posts/bulk-delete', [BlogPostController::class, 'bulkDelete']);
     });
+
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/sales-overview', [SalesOverviewController::class, 'index']);
+        Route::get('/product-performance', [ProductPerformanceController::class, 'index']);
+        Route::get('/order-status', [OrderStatusController::class, 'index']);
+        Route::get('/customer-insights', [CustomerInsightsController::class, 'index']);
+    });
+
+
 
     Route::middleware('admin')->group(function () {
         Route::post('/authors/import', [AuthorController::class, 'import']);

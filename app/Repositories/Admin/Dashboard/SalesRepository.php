@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Repositories\Admin;
+namespace App\Repositories\Admin\Dashboard;
 
 use App\Models\Order;
 use App\Repositories\Interfaces\Admin\Dashboard\SalesRepositoryInterface;

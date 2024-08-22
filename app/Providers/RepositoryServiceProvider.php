@@ -8,6 +8,10 @@ use App\Repositories\Admin\AuthorRepository;
 use App\Repositories\Admin\BookRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Admin\CategoryRepository;
+use App\Repositories\Admin\Dashboard\CustomerInsightsRepository;
+use App\Repositories\Admin\Dashboard\OrderStatusRepository;
+use App\Repositories\Admin\Dashboard\ProductPerformanceRepository;
+use App\Repositories\Admin\Dashboard\SalesRepository;
 use App\Repositories\Interfaces\Admin\AuthorRepositoryInterface;
 use App\Repositories\Interfaces\Admin\BookRepositoryInterface;
 use App\Repositories\Interfaces\Admin\CategoryRepositoryInterface;
@@ -29,6 +33,10 @@ use App\Repositories\Admin\LanguageRepository;
 use App\Repositories\Admin\OrderRepository as RepositoriesOrderRepository;
 use App\Repositories\Admin\PostRepository;
 use App\Repositories\Admin\PublisherRepository;
+use App\Repositories\Interfaces\Admin\Dashboard\CustomerInsightsRepositoryInterface;
+use App\Repositories\Interfaces\Admin\Dashboard\OrderStatusRepositoryInterface;
+use App\Repositories\Interfaces\Admin\Dashboard\ProductPerformanceRepositoryInterface;
+use App\Repositories\Interfaces\Admin\Dashboard\SalesRepositoryInterface;
 use App\Repositories\Website\AuthorRepository as WebsiteAuthorRepository;
 use App\Repositories\Website\BlogPostRepository;
 use App\Repositories\Website\BookRatingRepository;
@@ -54,6 +62,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(WishListRepositoryInterface::class, WishListRepository::class);
         $this->app->bind(SocialAuthRepositoryInterface::class, SocialAuthRepository::class);
         $this->app->bind(InterfacesOrderRepositoryInterface::class, RepositoriesOrderRepository::class);
+        $this->app->bind(SalesRepositoryInterface::class, SalesRepository::class);
+        $this->app->bind(ProductPerformanceRepositoryInterface::class, ProductPerformanceRepository::class);
+        $this->app->bind(OrderStatusRepositoryInterface::class, OrderStatusRepository::class);
+        $this->app->bind(CustomerInsightsRepositoryInterface::class, CustomerInsightsRepository::class);
 
 
 
