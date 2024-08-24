@@ -59,6 +59,6 @@ class SocialAuthController extends Controller
             'user' => json_encode($user)
         ]);
 
-        return redirect(env('FRONTEND_URL') . '/auth/callback?' . $queryParams);
+        return redirect(env('FRONTEND_URL') . '/auth-callback?' . $queryParams);
     }
 }
