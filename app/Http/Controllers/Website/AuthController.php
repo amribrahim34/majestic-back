@@ -57,7 +57,7 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        $user =  $request->user();
+        $user = $request->user()->load('addresses');
         return response()->json(new UserResource($user), 200);
     }
 

@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\Website\OrderRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use amribrahim34\BostaEgypt\BostaApi;
+use App\Models\Address;
 use Illuminate\Support\Facades\Log;
 
 class OrderRepository implements OrderRepositoryInterface
@@ -23,20 +24,59 @@ class OrderRepository implements OrderRepositoryInterface
         $this->bostaApi = $bostaApi;
     }
 
-    public function makeOrder(): array
+    public function makeOrder()
     {
         return DB::transaction(function () {
             $cart = $this->getUserCart();
             $city_name = request()->city;
             $this->validateCart($cart);
             $totalAmount = $this->calculateTotalAmount($cart);
-            $shipmentCost = $this->calculateShipmentCost($totalAmount, $city_name);
+            // $shipmentCost = $this->calculateShipmentCost($totalAmount, $city_name);
+            $shipmentCost = 100;
             $totalAmount += $shipmentCost;
+
+
+            // Update user data if provided
+            $this->updateUserData();
+
+            // Create or update user address
+            $address = $this->createOrUpdateAddress();
+
+
             $order = $this->createOrder($totalAmount, $shipmentCost);
             $this->createOrderItems($order, $cart);
             $this->clearCart();
             return $order->load('items');
         });
+    }
+
+    private function updateUserData()
+    {
+        $user = auth('sanctum')->user();
+        $updatableFields = ['user_name', 'email', 'mobile', 'gender', 'birthday'];
+
+        $userData = request()->only($updatableFields);
+
+        if (!empty($userData)) {
+            $user->update($userData);
+        }
+    }
+
+    private function createOrUpdateAddress()
+    {
+        $user = auth('sanctum')->user();
+        $addressData = request()->only(['address', 'city', 'country', 'postal_code']);
+
+        if (empty($addressData)) {
+            throw new Exception('Address information is required');
+        }
+
+        $address = $user->addresses()->updateOrCreate(
+            ['user_id' => $user->id],
+            $addressData
+        );
+
+        return $address;
     }
 
     protected function calculateShipmentCost($orderTotal, $city)
@@ -82,7 +122,7 @@ class OrderRepository implements OrderRepositoryInterface
         });
     }
 
-    private function createOrder(float $totalAmount, $shipping): Order
+    private function createOrder(float $totalAmount, $shipping)
     {
         $user = auth('sanctum')->user();
         $address = $user->addresses->first();
@@ -99,7 +139,7 @@ class OrderRepository implements OrderRepositoryInterface
         ]);
     }
 
-    private function createOrderItems(Order $order, $cart): void
+    private function createOrderItems(Order $order, $cart)
     {
         foreach ($cart->items as $cartItem) {
             OrderItem::create([

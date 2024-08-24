@@ -40,7 +40,8 @@ class OrderController extends Controller
                 'data' => new OrderResource($order)
             ], 201);
         } catch (\Throwable $th) {
-            return response()->json(['message' => __('orders.create_failed')], 500);
+            // return response()->json(['message' => __('orders.create_failed')], 500);
+            throw $th;
         }
     }
 

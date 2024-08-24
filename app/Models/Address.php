@@ -22,8 +22,17 @@ class Address extends Model
         'is_default',
     ];
 
+    protected $casts = [
+        'is_default' => 'boolean',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeDefault($query)
+    {
+        return $query->where('is_default', true);
     }
 }
