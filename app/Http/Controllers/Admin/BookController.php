@@ -20,6 +20,7 @@ use App\Exports\BookExport;
 use App\Imports\BookUpdate;;
 
 use App\Jobs\ProcessImport;
+use Illuminate\Support\Facades\Bus;
 
 class BookController extends Controller
 {
@@ -128,9 +129,14 @@ class BookController extends Controller
         ]);
 
         $path = $request->file('file')->store('imports');
-        $job = new ProcessImport(BookUpdate::class, $path);
-        $this->dispatch($job);
+        // $job = new ProcessImport(BookUpdate::class, $path);
+        // Bus::dispatch($job);
+        // $this->dispatch($job);
 
-        return response()->json(['message' => 'Import job queued successfully', 'job_id' => $job->getJobId()]);
+        Excel::import(new BookUpdate, $path);
+
+        return response()->json(['message' => 'Import started']);
+
+        // return response()->json(['message' => 'Import job queued successfully', 'job_id' => $job->getJobId()]);
     }
 }

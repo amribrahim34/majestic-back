@@ -10,53 +10,58 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\ToCollection;
 
-class BookUpdate implements ToModel, WithHeadingRow, WithValidation, WithBatchInserts, WithChunkReading, ShouldQueue
+class BookUpdate  implements ToCollection, WithHeadingRow, WithChunkReading, WithBatchInserts, ShouldQueue
 {
+
+    private $fillableFields = [
+        'title',
+        'category_id',
+        'publisher_id',
+        'publication_date',
+        'language_id',
+        'isbn10',
+        'isbn13',
+        'num_pages',
+        'dimensions',
+        'weight',
+        'format',
+        'price',
+        'stock_quantity',
+        'description',
+        'img'
+    ];
     /**
      * @param array $row
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
+    public function collection(Collection $rows)
     {
-        $book = Book::find($row['book_id']);
+        DB::transaction(function () use ($rows) {
+            $rows->each(function ($row) {
+                $bookId = $row['book_id'];
+                if (!$bookId) {
+                    return; // Skip this row if book_id is not present
+                }
 
-        if (!$book) {
-            return null;
-        }
+                $data = $row->only($this->fillableFields)->toArray();
+                $data = array_filter($data, fn($value) => $value !== null && $value !== '');
 
-        $fillableFields = [
-            'title',
-            'category_id',
-            'publisher_id',
-            'publication_date',
-            'language_id',
-            'isbn10',
-            'isbn13',
-            'num_pages',
-            'dimensions',
-            'weight',
-            'format',
-            'price',
-            'stock_quantity',
-            'description',
-            'img'
-        ];
-
-        $data = array_intersect_key($row, array_flip($fillableFields));
-        $data = array_filter($data, function ($value) {
-            return $value !== null && $value !== '';
+                Book::where('id', $bookId)->update($data);
+            });
         });
-
-        $book->update($data);
-        $job = $this->job;
-        if ($job instanceof ProcessImport) {
-            $progress = ($job->getJobBatchId() / $this->totalRows) * 100;
-            $job->updateProgress($progress);
-        }
-        return $book;
     }
+
+    public function headingRow(): int
+    {
+        return 1; // Assuming the first row is the header
+    }
+
+
 
     /**
      * @return array
@@ -97,5 +102,14 @@ class BookUpdate implements ToModel, WithHeadingRow, WithValidation, WithBatchIn
     public function chunkSize(): int
     {
         return 1000;
+    }
+
+    public function getCsvSettings(): array
+    {
+        return [
+            // 'delimiter' => ' ',  // Set the delimiter to space
+            'enclosure' => '"',
+            'input_encoding' => 'UTF-8',
+        ];
     }
 }
