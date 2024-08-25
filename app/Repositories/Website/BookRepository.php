@@ -60,7 +60,7 @@ class BookRepository implements BookRepositoryInterface
         // Assuming you have a sales or order table to determine best-selling books
         // This is a placeholder implementation
         return Book::with(['authors', 'category', 'publisher', 'language'])
-            ->orderBy('stock_quantity', 'asc')  // As a simple proxy for popularity
+            ->whereNotNull('img')
             ->take($limit)
             ->get();
     }
