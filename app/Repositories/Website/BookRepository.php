@@ -11,8 +11,7 @@ class BookRepository implements BookRepositoryInterface
 {
     public function getAllBooks(array $filters = [])
     {
-        $query = Book::whereNotNull('img')
-            ->with(['authors', 'category', 'publisher', 'language']);
+        $query = Book::with(['authors', 'category', 'publisher', 'language']);
         $query = $this->applyFilters($query, $filters);
         return $query->paginate(9);
     }
@@ -34,7 +33,7 @@ class BookRepository implements BookRepositoryInterface
         return Book::where('title', 'like', "%{$query}%")
             ->orWhere('isbn10', $query)
             ->orWhere('isbn13', $query)
-            ->whereNotNull('img')
+            // ->whereNotNull('img')
             ->orWhere('publication_date', $query)
             ->orWhereHas('authors', function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%");
@@ -91,7 +90,10 @@ class BookRepository implements BookRepositoryInterface
     private function applyFilters(Builder $query, array $filters): Builder
     {
         if (isset($filters['category_ids'])) {
-            $query->whereIn('category_id', $filters['category_ids']);
+            $query->whereIn('category_id', $filters['category_ids'])
+                ->orWhereHas('category', function ($q) use ($filters) {
+                    $q->whereIn('parent_id', $filters['category_ids']);
+                });
         }
 
         if (isset($filters['formats'])) {
