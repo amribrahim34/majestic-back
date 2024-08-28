@@ -89,6 +89,11 @@ class CategoryController extends Controller
         return response()->json(['message' => __('categories.deleted')], Response::HTTP_NO_CONTENT);
     }
 
+    public function export()
+    {
+        return Excel::download(new CategoryExport, 'categories.xlsx');
+    }
+
 
     public function import(Request $request)
     {
