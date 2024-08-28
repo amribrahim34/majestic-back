@@ -37,4 +37,9 @@ class CategoryExport implements FromQuery, WithHeadings, WithMapping
             $category->updated_at,
         ];
     }
+
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
 }
