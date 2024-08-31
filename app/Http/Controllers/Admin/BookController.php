@@ -81,7 +81,16 @@ class BookController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,xls',
         ]);
-        Excel::import(new BooksImport, $request->file('file'));
+        Log::alert('tihis is the request', [$request->file]);
+        $path = $request->file('file')->store('imports');
+        // $job = new ProcessImport(BookUpdate::class, $path);
+        // Bus::dispatch($job);
+        // $this->dispatch($job);
+        Log::alert('tihis is the path', [$path]);
+
+        Excel::import(new BooksImport, $path);
+
+        // Excel::import(new BooksImport, $request->file('file'));
         return response()->json(['msg' => "success"], Response::HTTP_CREATED);
     }
 

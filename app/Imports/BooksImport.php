@@ -10,43 +10,117 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\ProcessImport;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\ToCollection;
 
-class BooksImport implements ToModel, WithHeadingRow
+class BooksImport  implements ToCollection, WithHeadingRow, WithChunkReading, WithBatchInserts, ShouldQueue
 {
-    public function model(array $row)
+
+    public function collection(Collection $rows)
     {
-        $categoryId = $this->findOrCreateCategory($row['category'], $row['subcategory']);
-        $publisherId = $this->findOrCreatePublisher($row['publisher']);
-        $book = new Book([
-            'title' => $row['title'],
-            'category_id' => $categoryId ?? null,
-            'publisher_id' =>  $publisherId ?? null,
-            'publication_date' => $this->parseDate($row['publication_date']) ?? null,
-            'language_id' => $row['language_id'] ?? 1,
-            'isbn10' => $this->cleanIsbn($row['isbn10'] ?? null),
-            'isbn13' => $this->cleanIsbn($row['isbn13'] ?? null),
-            'num_pages' => $row['num_pages'] ?? null,
-            'dimensions' => $row['dimensions'] ?? null,
-            'weight' => $row['weight'] ?? null,
-            'format' => $row['format'] ?? 'Hard Copy',
-            'price' => $this->cleanPrice($row['price'] ?? null),
-            'stock_quantity' => $row['stock_quantity'] ?? 10,
-            'description' => $row['description'] ?? null,
-            'img' => $row['img'] ?? null,
-        ]);
+        DB::transaction(function () use ($rows) {
+            $rows->each(function ($row) {
+                // Log::alert('this is the row', $row->toArray());
+                if (empty($row['title'])) {
+                    Log::error('Skipping row due to missing title', $row->toArray());
+                    return; // Skip this row
+                }
+                $categoryId = $this->findOrCreateCategory($row['category'], $row['subcategory']);
+                $publisherId = $this->findOrCreatePublisher($row['publisher']);
 
-        $book->save();
-
-        $authorNames = $this->parseAuthors($row['author']);
-        foreach ($authorNames as $authorName) {
-            $authorId = $this->findOrCreateAuthor($authorName);
-            if ($authorId) {
-                $book->authors()->attach($authorId);
-            }
-        }
-
-        return $book;
+                $data = [
+                    'title' => $row['title'],
+                    'category_id' => $categoryId ?? null,
+                    'publisher_id' =>  $publisherId ?? null,
+                    'publication_date' => $this->parseDate($row['publication_date']) ?? null,
+                    'language_id' => $row['language_id'] ?? 1,
+                    'isbn10' => $this->cleanIsbn($row['isbn10'] ?? null),
+                    'isbn13' => $this->cleanIsbn($row['isbn13'] ?? null),
+                    'num_pages' => $row['num_pages'] ?? null,
+                    'dimensions' => $row['dimensions'] ?? null,
+                    'weight' => $row['weight'] ?? null,
+                    'format' => $row['format'] ?? 'Hard Copy',
+                    'price' => $this->cleanPrice($row['price'] ?? null),
+                    'stock_quantity' => $row['stock_quantity'] ?? 10,
+                    'description' => $row['description'] ?? null,
+                    'img' => $row['img'] ?? null,
+                ];
+                Log::alert('import books', $data);
+                $book =  Book::create($data);
+                $authorNames = $this->parseAuthors($row['author']);
+                foreach ($authorNames as $authorName) {
+                    $authorId = $this->findOrCreateAuthor($authorName);
+                    if ($authorId) {
+                        $book->authors()->attach($authorId);
+                    }
+                }
+            });
+        });
     }
+
+    public function headingRow(): int
+    {
+        return 1; // Assuming the first row is the header
+    }
+
+
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'category_id' => 'sometimes|exists:categories,id',
+            'publisher_id' => 'sometimes|exists:publishers,id',
+            'publication_date' => 'sometimes|date',
+            'language_id' => 'required|exists:languages,id',
+            'isbn10' => 'sometimes|string|size:10',
+            'isbn13' => 'sometimes|string|size:13',
+            'num_pages' => 'sometimes|integer|min:1',
+            'dimensions' => 'sometimes|string',
+            'weight' => 'sometimes|numeric|min:0',
+            'format' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'stock_quantity' => 'sometimes|integer|min:0',
+            'description' => 'sometimes|string',
+            'img' => 'sometimes|string',
+        ];
+    }
+
+    /**
+     * @return int
+     */
+    public function batchSize(): int
+    {
+        return 1000;
+    }
+
+    /**
+     * @return int
+     */
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
+
+    public function getCsvSettings(): array
+    {
+        return [
+            // 'delimiter' => ' ',  // Set the delimiter to space
+            'enclosure' => '"',
+            'input_encoding' => 'UTF-8',
+        ];
+    }
+
+
 
     private function cleanIsbn($isbn)
     {
@@ -141,8 +215,13 @@ class BooksImport implements ToModel, WithHeadingRow
 
         return $subCategory->id;
     }
+
     private function findOrCreatePublisher($publisherName)
     {
+        if (empty($publisherName)) {
+            return null;
+        }
+
         return Publisher::firstOrCreate(
             ['publisher_name' => $publisherName],
             ['publisher_name' => $publisherName]
