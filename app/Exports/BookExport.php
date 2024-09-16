@@ -10,12 +10,27 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
+use Illuminate\Support\Facades\DB;
 
 class BookExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, ShouldAutoSize, ShouldQueue
 {
     public function query()
     {
-        return Book::query()->with(['category:id,category_name', 'publisher:id,publisher_name', 'language:id,language_name']);
+        return Book::query()
+            ->select(
+                'books.id',
+                'books.title',
+                'books.isbn10',
+                'books.isbn13',
+                'books.price',
+                'books.img',
+                'categories.category_name',
+                'publishers.publisher_name',
+                'languages.language_name'
+            )
+            ->leftJoin('categories', 'books.category_id', '=', 'categories.id')
+            ->leftJoin('publishers', 'books.publisher_id', '=', 'publishers.id')
+            ->leftJoin('languages', 'books.language_id', '=', 'languages.id');
     }
 
     public function headings(): array
@@ -25,20 +40,11 @@ class BookExport implements FromQuery, WithHeadings, WithMapping, WithChunkReadi
             'Title',
             'Category',
             'Publisher',
-            'Publication Date',
             'Language',
             'ISBN-10',
             'ISBN-13',
-            'Number of Pages',
-            'Dimensions',
-            'Weight',
-            'Format',
             'Price',
-            'Stock Quantity',
-            'Description',
             'Image URL',
-            'Order Count',
-            'Average Rating',
         ];
     }
 
@@ -47,39 +53,26 @@ class BookExport implements FromQuery, WithHeadings, WithMapping, WithChunkReadi
         return [
             $book->id,
             $this->sanitizeString($book->title),
-            $this->sanitizeString($book->category->category_name ?? 'N/A'),
-            $this->sanitizeString($book->publisher->publisher_name ?? 'N/A'),
-            $book->publication_date,
-            $this->sanitizeString($book->language->language_name ?? 'N/A'),
+            $this->sanitizeString($book->category_name ?? 'N/A'),
+            $this->sanitizeString($book->publisher_name ?? 'N/A'),
+            $this->sanitizeString($book->language_name ?? 'N/A'),
             $this->sanitizeString($book->isbn10),
             $this->sanitizeString($book->isbn13),
-            $book->num_pages,
-            $this->sanitizeString($book->dimensions),
-            $this->sanitizeString($book->weight),
-            $this->sanitizeString($book->format),
             $book->price,
-            $book->stock_quantity,
-            $this->sanitizeString($book->description),
             $this->sanitizeString($book->img),
-            $book->order_count,
-            $book->average_rating,
         ];
     }
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 500; // Reduced chunk size
     }
 
     private function sanitizeString($value): string
     {
-        // Remove any leading equals sign to prevent formula injection
+        $value = is_string($value) ? $value : (string)$value;
         $value = ltrim($value, '=');
-
-        // Escape any other characters that could be interpreted as formulas
         $value = StringHelper::sanitizeUTF8($value);
-
-        // Limit the length of the string to prevent issues with very long text
         return mb_substr($value, 0, 32000);
     }
 }
