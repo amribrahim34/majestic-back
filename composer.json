@@ -6,9 +6,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "algolia/scout-extended": "^3.1",
         "amribrahim34/bosta-laravel": "dev-main",
         "darkaonline/l5-swagger": "^8.6",
         "doctrine/dbal": "^3.3",
+        "elasticsearch/elasticsearch": "^8.15",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",

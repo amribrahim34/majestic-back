@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ElasticsearchService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,12 +10,47 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Laravel\Scout\Searchable;
+
 
 class Book extends Model
 {
     use HasFactory;
+    use Searchable;
+
 
     protected $appends = ['order_count', 'average_rating'];
+
+    protected static function booted()
+    {
+        static::saved(function ($book) {
+            $book->searchable();
+        });
+
+        static::deleted(function ($book) {
+            $book->unsearchable();
+        });
+    }
+
+    public function toSearchableArray()
+    {
+        $array = $this->toArray();
+
+        // Load the relationships you want to include
+        $this->load(['category', 'publisher',  'authors']);
+
+        // Add related data
+        $array['category_name'] = $this->category->category_name ?? null;
+        $array['publisher_name'] = $this->publisher->publisher_name ?? null;
+        $array['authors'] = $this->authors->pluck('name')->toArray();
+
+        // Add computed attributes
+
+        // Remove any attributes you don't want to index
+        unset($array['created_at'], $array['updated_at']);
+
+        return $array;
+    }
 
     protected $fillable = [
         'title',

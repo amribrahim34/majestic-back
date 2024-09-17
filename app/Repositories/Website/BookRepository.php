@@ -28,24 +28,78 @@ class BookRepository implements BookRepositoryInterface
             ->paginate(20);
     }
 
+    // public function searchBooks($query, array $filters = [])
+    // {
+    //     return Book::where('title', 'like', "%{$query}%")
+    //         ->orWhere('isbn10', $query)
+    //         ->orWhere('isbn13', $query)
+    //         // ->whereNotNull('img')
+    //         ->orWhere('publication_date', $query)
+    //         ->orWhereHas('authors', function ($q) use ($query) {
+    //             $q->where('name', 'like', "%{$query}%");
+    //         })
+    //         ->orWhereHas('category', function ($q) use ($query) {
+    //             $q->where('category_name', 'like', "%{$query}%");
+    //         })
+    //         ->orWhereHas('publisher', function ($q) use ($query) {
+    //             $q->where('name', 'like', "%{$query}%");
+    //         })
+    //         ->with(['authors', 'category', 'publisher', 'language'])
+    //         ->paginate(20);
+    // }
+
     public function searchBooks($query, array $filters = [])
     {
-        return Book::where('title', 'like', "%{$query}%")
-            ->orWhere('isbn10', $query)
-            ->orWhere('isbn13', $query)
-            // ->whereNotNull('img')
-            ->orWhere('publication_date', $query)
-            ->orWhereHas('authors', function ($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%");
-            })
-            ->orWhereHas('category', function ($q) use ($query) {
-                $q->where('category_name', 'like', "%{$query}%");
-            })
-            ->orWhereHas('publisher', function ($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%");
-            })
-            ->with(['authors', 'category', 'publisher', 'language'])
-            ->paginate(20);
+        $searchQuery = Book::query();
+
+        // Split the query into words
+        $keywords = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
+
+        $searchQuery->where(function ($q) use ($keywords) {
+            foreach ($keywords as $keyword) {
+                $q->orWhere(function ($subQuery) use ($keyword) {
+                    $this->addFuzzySearchConditions($subQuery, $keyword);
+                });
+            }
+        });
+
+        // Apply filters
+        $searchQuery = $this->applyFilters($searchQuery, $filters);
+
+        // Eager load relationships
+        $searchQuery->with(['authors', 'category', 'publisher', 'language']);
+
+        // Log the final SQL query for debugging
+        Log::debug("Search Query SQL", [$searchQuery->toSql(), $searchQuery->getBindings()]);
+
+        return $searchQuery->paginate(20);
+    }
+
+    private function addFuzzySearchConditions($query, $keyword)
+    {
+        $fields = ['title', 'isbn10', 'isbn13'];
+        $relatedFields = [
+            'authors' => 'name',
+            'category' => 'category_name',
+            'publisher' => 'name'
+        ];
+
+        foreach ($fields as $field) {
+            $query->orWhere($field, 'like', "%{$keyword}%")
+                ->orWhereRaw("LEVENSHTEIN(?, {$field}) <= ?", [$keyword, $this->calculateMaxDistance($keyword)]);
+        }
+
+        foreach ($relatedFields as $relation => $field) {
+            $query->orWhereHas($relation, function ($q) use ($field, $keyword) {
+                $q->where($field, 'like', "%{$keyword}%")
+                    ->orWhereRaw("LEVENSHTEIN(?, {$field}) <= ?", [$keyword, $this->calculateMaxDistance($keyword)]);
+            });
+        }
+    }
+
+    private function calculateMaxDistance($keyword)
+    {
+        return min(3, strlen($keyword) - 1);
     }
 
     public function getLatestBooks($limit = 10)
