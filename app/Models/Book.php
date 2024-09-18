@@ -151,4 +151,9 @@ class Book extends Model
                 });
         });
     }
+
+    public function scopeIsActive(Builder $query)
+    {
+        return $query->where('is_active', true);
+    }
 }

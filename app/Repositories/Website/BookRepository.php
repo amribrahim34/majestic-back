@@ -11,7 +11,7 @@ class BookRepository implements BookRepositoryInterface
 {
     public function getAllBooks(array $filters = [])
     {
-        $query = Book::with(['authors', 'category', 'publisher', 'language']);
+        $query = Book::with(['authors', 'category', 'publisher', 'language'])->isActive()->orderBy('sort');
         $query = $this->applyFilters($query, $filters);
         return $query->paginate(9);
     }
@@ -25,6 +25,8 @@ class BookRepository implements BookRepositoryInterface
     {
         return Book::where('category_id', $categoryId)
             ->with(['authors', 'publisher', 'language'])
+            ->isActive()
+            ->orderBy('sort')
             ->paginate(20);
     }
 
@@ -108,6 +110,8 @@ class BookRepository implements BookRepositoryInterface
             ->orderBy('publication_date', 'desc')
             ->whereNotNull('img')
             ->take($limit)
+            ->isActive()
+            ->orderBy('sort')
             ->get();
     }
 
@@ -138,6 +142,8 @@ class BookRepository implements BookRepositoryInterface
             ->where('id', '!=', $id)
             ->inRandomOrder()
             ->limit($limit)
+            ->isActive()
+            ->orderBy('sort')
             ->get();
     }
 
