@@ -5,13 +5,19 @@ namespace App\Repositories\Website;
 use App\Models\Book;
 use App\Repositories\Interfaces\Website\BookRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BookRepository implements BookRepositoryInterface
 {
+
     public function getAllBooks(array $filters = [])
     {
-        $query = Book::with(['authors', 'category', 'publisher', 'language'])->isActive()->orderBy('sort');
+        $query = Book::with(['authors', 'category', 'publisher', 'language'])->isActive();
+
+
+        $query = $query->orderBy(DB::raw('ISNULL(sort), sort'), 'ASC');
+
         $query = $this->applyFilters($query, $filters);
         return $query->paginate(9);
     }
@@ -26,7 +32,7 @@ class BookRepository implements BookRepositoryInterface
         return Book::where('category_id', $categoryId)
             ->with(['authors', 'publisher', 'language'])
             ->isActive()
-            ->orderBy('sort')
+            ->orderBy(DB::raw('ISNULL(sort), sort'), 'ASC')
             ->paginate(20);
     }
 
@@ -107,11 +113,10 @@ class BookRepository implements BookRepositoryInterface
     public function getLatestBooks($limit = 10)
     {
         return Book::with(['authors', 'category', 'publisher', 'language'])
-            ->orderBy('publication_date', 'desc')
             ->whereNotNull('img')
-            ->take($limit)
             ->isActive()
-            ->orderBy('sort')
+            ->orderBy(DB::raw('ISNULL(sort), sort'), 'ASC')
+            ->take($limit)
             ->get();
     }
 
@@ -140,10 +145,9 @@ class BookRepository implements BookRepositoryInterface
 
         return Book::where('category_id', $book->category_id)
             ->where('id', '!=', $id)
-            ->inRandomOrder()
-            ->limit($limit)
             ->isActive()
-            ->orderBy('sort')
+            ->orderBy(DB::raw('ISNULL(sort), sort'), 'ASC')
+            ->limit($limit)
             ->get();
     }
 

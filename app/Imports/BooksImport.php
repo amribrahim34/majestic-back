@@ -50,6 +50,8 @@ class BooksImport  implements ToCollection, WithHeadingRow, WithChunkReading, Wi
                     'stock_quantity' => $row['stock_quantity'] ?? 10,
                     'description' => $row['description'] ?? null,
                     'img' => $row['img'] ?? null,
+                    'sort' => $row['sort'] ?? null,
+                    'is_active' => $row['is_active'] ?? null,
                 ];
                 Log::alert('import books', $data);
                 $book =  Book::create($data);

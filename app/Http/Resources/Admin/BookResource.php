@@ -38,6 +38,8 @@ class BookResource extends JsonResource
             'stock_quantity' => $this->stock_quantity,
             'description' => $this->description,
             'img' => $this->img,
+            'is_active' => $this->is_active,
+            'sort' => $this->sort,
             'image' => $this->image,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),

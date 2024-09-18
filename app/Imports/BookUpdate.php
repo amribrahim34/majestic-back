@@ -32,7 +32,9 @@ class BookUpdate  implements ToCollection, WithHeadingRow, WithChunkReading, Wit
         'price',
         'stock_quantity',
         'description',
-        'img'
+        'img',
+        'is_active',
+        'sort',
     ];
     /**
      * @param array $row
