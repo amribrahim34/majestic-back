@@ -70,6 +70,30 @@ class Book extends Model
     ];
 
 
+    // Configure Algolia index settings
+    public function algoliaSettings()
+    {
+        return [
+            'searchableAttributes' => [
+                'unordered(title)',
+                'unordered(author_names)',
+                'unordered(category_name)',
+                'unordered(publisher_name)',
+                'isbn10',
+                'isbn13'
+            ],
+            'attributesForFaceting' => [
+                'filterOnly(category_id)',
+                'filterOnly(format)',
+                'filterOnly(publication_year)',
+                'filterOnly(is_active)'
+            ],
+            'customRanking' => [
+                'asc(sort_order)'
+            ]
+        ];
+    }
+
     // Specify which attributes are translatable.
     // public $translatable = ['title', 'description'];
 

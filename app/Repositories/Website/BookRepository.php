@@ -182,15 +182,14 @@ class BookRepository implements BookRepositoryInterface
 
         if (isset($filters['search'])) {
             $searchTerm = $filters['search'];
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'like', "%{$searchTerm}%")
-                    ->orWhereHas('authors', function ($authorQuery) use ($searchTerm) {
-                        $authorQuery->where('name', 'like', "%{$searchTerm}%");
-                    })
-                    ->orWhereHas('category', function ($categoryQuery) use ($searchTerm) {
-                        $categoryQuery->where('category_name', 'like', "%{$searchTerm}%");
-                    });
-            });
+            $searchResults = Book::search($searchTerm)->raw();
+            $bookIds = collect($searchResults['hits'])->pluck('id')->toArray();
+
+            if (!empty($bookIds)) {
+                $query->whereIn('id', $bookIds);
+            } else {
+                $query->where('id', 0);
+            }
         }
         Log::debug("filters in repository", $filters);
         Log::debug("Query SQL", [$query->toSql(), $query->getBindings()]);
